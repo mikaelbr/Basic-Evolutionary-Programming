@@ -15,17 +15,17 @@ class SelectionProtocol(object):
     def do(self):
         pass
 
-    def reduce_pool(self):
-        temp_pop = self.population.adults[:]
+    def reduce_pool(self, adults):
+        temp_pop = adults[:]
         temp_pop.sort(key=attrgetter('fitness_value'), reverse=True)
-        self.population.adults = temp_pop[:self.size]
+        return temp_pop[:self.size]
 
 
 class FullReplacement(SelectionProtocol):
 
     def do(self):
         self.population.kill_adults()
-        self.population.adults = population.children[:]
+        self.population.adults = self.population.children[:]
         self.population.remove_children()
 
 
@@ -33,14 +33,14 @@ class OverProduction(FullReplacement):
 
     def do(self):
         super(OverProduction, self).do()
-        self.reduce_pool()
+        self.population.adults = self.reduce_pool(self.population.adults)
 
 class GenerationalMixing(SelectionProtocol):
 
     def do(self):
         self.population.adults += self.population.children[:]
         self.population.remove_children()
-        self.reduce_pool()
+        self.population.adults = self.reduce_pool(self.population.adults)
 
 
 
@@ -65,7 +65,7 @@ class SelectionMechanism(object):
         tmp_population = self.population.adults[:]
         wheel = []
         for adult in tmp_population:
-            wheel.append((adult, probability_func(adult.fitness_value)))
+            wheel.append((adult, self.probability_func(adult.fitness_value)))
         
         new_population = []
         while (len(new_population) < min([self.size, len(tmp_population)])):
@@ -89,9 +89,10 @@ class FitnessProportionate(SelectionMechanism):
         self.total = sum(map(attrgetter('fitness_value'), self.population.adults[:]))
 
     def probability_func (self, fitness):
-        return fitness / self.total
+        return float(fitness) / float(self.total)
 
     def do(self):
+        self.set_values();
         return self.roulette_wheel()
 
 
@@ -105,15 +106,18 @@ class SigmaScaling(SelectionMechanism):
 
     def set_values(self):
         tmp_population = self.population.adults[:]
-        self.pop_length = len(tmp_population)
+        self.pop_length = float(len(tmp_population))
         self.avg_fitness = sum(map(attrgetter('fitness_value'), tmp_population)) / self.pop_length
 
         # Var
-        e_square = sum(map(lambda x: math.pow(x.fitness, 2), tmp_population)) / self.pop_length
-        self.std_deviation = 2 * math.sqrt(e_square - math.pow(self.avg_fitness, 2));
+        e_square = sum(map(lambda x: math.pow(float(x.fitness_value), 2.0), tmp_population)) / self.pop_length
+        self.std_deviation = 2.0 * math.sqrt(e_square - math.pow(self.avg_fitness, 2.0))
+
+        if self.std_deviation == 0:
+            self.std_deviation = 0.00000001
 
     def probability_func (self, fitness):
-        return (1.0 + ((fitness - self.avg_fitness) / self.std_deviation)) / self.pop_length
+        return (1.0 + ((fitness - self.avg_fitness) / self.std_deviation))
 
     def do(self):
         self.set_values();
@@ -141,7 +145,7 @@ class HighestFitness(SelectionMechanism):
 
     def do(self):
         pop_sorted = sorted(self.population.adults, key=attrgetter('fitness_value'), reverse=True)
-        self.population.parents = pop_sorted[:size]
+        self.population.parents = pop_sorted[:self.size]
         return self.population.parents
 
 
@@ -157,7 +161,6 @@ class SelectionStrategy(object):
         
     # IMPLEMENT ELITISM?
         
-
     def select(self, population):
 
         # Check if we have protocol defined for the strategy
@@ -168,6 +171,12 @@ class SelectionStrategy(object):
 
             # Do selection protocol
             self.protocol.do()
+
+            # Need to check if we have enough indeviduals
+            if len(population.adults) < self.size:
+                population.adults.sort(key=attrgetter('fitness_value'), reverse=True)
+                for i in range(self.size - len(population.adults)):
+                    population.adults.append(population.adults[i % len(population.adults)])
 
 
         # Check if we have mechanism defined for the strategy

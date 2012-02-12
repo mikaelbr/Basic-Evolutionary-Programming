@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 
 # Testing - init vars
 from lib.EA import *
@@ -6,13 +7,14 @@ from lib.Selection import *
 from lib.Reproduction import *
 from lib.Mutation import *
 from lib.Population import *
+from lib.Plotter import *
 
-pop_size = 50
-generations = 200
-output_size = int(pop_size - (pop_size/10))
+pop_size = 20
+generations = 100
+output_size = int(pop_size - (pop_size/5))
 birth_probability = 1.0
-mutation_probability = 0.1
-geno_size = 20
+mutation_probability = 0.25
+geno_size = 40
 
 
 # Genotype subclass
@@ -53,17 +55,20 @@ def create_binary_vector(fitness_test, gene_size):
 
 population = Population(pop_size, create_binary_vector(fitness_test, geno_size))
 
-adult_selection = SelectionStrategy(output_size)
-parent_selection = SelectionStrategy(output_size, None, Tournament)
+adult_selection = SelectionStrategy(output_size, OverProduction)
+parent_selection = SelectionStrategy(pop_size, None, SigmaScaling)
 
 reproduction = BinaryUniformCrossover(birth_probability) # Birth probability
 mutation = BinaryStringInversion(mutation_probability) # Mutation probability
 
-ea = EA(population, adult_selection, parent_selection, reproduction, mutation, generations)
+plotter = Plotter()
+
+ea = EA(population, adult_selection, parent_selection, reproduction, mutation, generations, plotter)
 ea.loop()
 
+
 print "Length: %d" % len(ea.population.children)
-for item in ea.population.children:
+for item in ea.population.children[:]:
 
     item.toPhenotype()
     item.fitness()
@@ -74,4 +79,4 @@ for item in ea.population.children:
     print "Value %s, fitness: %d" % (item.value, fitness)
 
 
-
+plotter.plot()
