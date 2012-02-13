@@ -1,4 +1,29 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+---------------------------------------------------------------------------
+*               ONE MAX Solution - Evolutionary Algorithms                *
+---------------------------------------------------------------------------
+
+    Project 1.A – IT3708 - Subsymbolic Methods in AI, Spring 2012
+    Programmed by Mikael Brevik
+
+    A basic EA for solving the One Max Problem
+    Should be modular enough to solve other evolutionary problems 
+    aswell. Very object oriented, and based on polymorphy and 
+    inheritance. 
+
+---------------------------------------------------------------------------
+*                         // EXAMPLE RUN //                               *
+---------------------------------------------------------------------------
+
+$ ipython main.py 
+
+
+---------------------------------------------------------------------------
+*               ONE MAX Solution - Evolutionary Algorithms                *
+---------------------------------------------------------------------------
+"""
 
 # Testing - init vars
 from lib.EA import *
@@ -9,15 +34,7 @@ from lib.Mutation import *
 from lib.Population import *
 from lib.Plotter import *
 
-pop_size = 20
-generations = 100
-output_size = int(pop_size - (pop_size/5))
-birth_probability = 1.0
-mutation_probability = 0.25
-geno_size = 40
-
-
-# Genotype subclass
+# Genotype/Phenotype subclass
 class BinaryVector(Indevidual):
 
     def __init__(self, gene_size, fitness_func, value = None):
@@ -45,38 +62,116 @@ def fitness_test(phenotype_value):
 
 
 
-# A closure solution to pass arguments in the inner function.
 def create_binary_vector(fitness_test, gene_size):
+    """
+        A closure solution to pass arguments in the inner function.
+        This way we can initiate the Indevidual subclass with 
+        arbitrary number of arguments
+    """
 
     def inner_closure ():
         return BinaryVector(gene_size, fitness_test)
 
     return inner_closure
 
-population = Population(pop_size, create_binary_vector(fitness_test, geno_size))
 
-adult_selection = SelectionStrategy(output_size, OverProduction)
-parent_selection = SelectionStrategy(pop_size, None, SigmaScaling)
+if __name__ == "__main__":
 
-reproduction = BinaryUniformCrossover(birth_probability) # Birth probability
-mutation = BinaryStringInversion(mutation_probability) # Mutation probability
+    import argparse
 
-plotter = Plotter()
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 
-ea = EA(population, adult_selection, parent_selection, reproduction, mutation, generations, plotter)
-ea.loop()
+    parser.add_argument(
+        '-o', 
+        action="store", 
+        dest="output_file",
+        type=str, 
+        default=None,
+        help='The threshold, if not optimized')
+
+    parser.add_argument(
+        '-ps', 
+        dest="pop_size",
+        type=float,
+        action="store", 
+        default=20,
+        help='Population size')
+
+    parser.add_argument(
+        '-m', 
+        action="store", 
+        dest="mutation_probability",
+        type=float, 
+        default=0.25,
+        help='Mutation probability')
+
+    parser.add_argument(
+        '-b', 
+        action="store", 
+        dest="birth_probability",
+        type=float, 
+        default=1.0,
+        help='Birth probability')
+
+    parser.add_argument(
+        '-s', 
+        action="store", 
+        dest="geno_size",
+        type=int,
+        default=40,
+        help='Geno size. Number of bits.')
+
+    parser.add_argument(
+        '-g', 
+        action="store", 
+        dest="generations",
+        type=int,
+        default=100,
+        help='Number of generations')
 
 
-print "Length: %d" % len(ea.population.children)
-for item in ea.population.children[:]:
+    args = parser.parse_args()
 
-    item.toPhenotype()
-    item.fitness()
-    fitness = item.fitness_value;
+    pop_size = args.pop_size
+    generations = args.generations
+    output_size = int(pop_size - (pop_size/5))
+    birth_probability = args.birth_probability
+    mutation_probability = args.mutation_probability
+    geno_size = args.geno_size
+    output_file = args.output_file
 
-    if fitness is None:
-        fitness = 0
-    print "Value %s, fitness: %d" % (item.value, fitness)
+    print args
+
+    print "Size: %d " % pop_size
+
+    population = Population(pop_size, create_binary_vector(fitness_test, geno_size))
+
+    adult_selection = SelectionStrategy(output_size, FullReplacement)
+    parent_selection = SelectionStrategy(pop_size, None, SigmaScaling)
+
+    reproduction = BinaryUniformCrossover(birth_probability) # Birth probability
+    mutation = BinaryStringInversion(mutation_probability) # Mutation probability
+
+    if output_file is not None:
+        plotter = Plotter("./plots", output_file)
+    else:
+        plotter = None
+
+    ea = EA(population, adult_selection, parent_selection, reproduction, mutation, generations, plotter)
+    ea.loop()
+
+    print "Length: %d" % len(ea.population.children)
+    for item in ea.population.children[:]:
+
+        item.toPhenotype()
+        item.fitness()
+        fitness = item.fitness_value;
+
+        if fitness is None:
+            fitness = 0
+        print "Value %s, fitness: %d" % (item.value, fitness)
 
 
-plotter.plot()
+    if plotter is not None:
+        plotter.plot()
+

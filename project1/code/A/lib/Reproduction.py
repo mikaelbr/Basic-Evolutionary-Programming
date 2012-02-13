@@ -58,19 +58,20 @@ class BinaryTwoPointCrossover(Reproduction):
 
     def __init__(self, birth_probability, split1 = None, split2 = None):
         super(BinaryTwoPointCrossover, self).__init__(birth_probability)
-        self.split = split
+        self.split1 = split1
+        self.split2 = split2
 
     def do(self, g1, g2):
         """
             Creates two children. Split twice. Randomly generated
             if no split point given. 
         """
-        split_in1, split_in2 = split1, split2
+        split_in1, split_in2 = self.split1, self.split2
         if split_in1 is None:
             split_in1 = random.randint(1, len(g1.value)-1)
         
         if split_in2 is None:
-            split_in2 = random.randint(1, len(g1.value)-1)
+            split_in2 = random.randint(1, len(g2.value)-1)
         
         if split_in1 > split_in2:
             # Switch up

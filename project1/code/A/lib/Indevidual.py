@@ -11,6 +11,7 @@ class Indevidual(object):
     def phenotype(self):
         return self._phenotype
 
+
     @phenotype.setter
     def phenotype(self, new_phenotype):
         self._phenotype = new_phenotype

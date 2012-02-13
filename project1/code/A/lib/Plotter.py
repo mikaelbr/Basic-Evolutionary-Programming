@@ -1,33 +1,64 @@
 import math
+import fnmatch
+import os
+import re 
+import copy
+
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 class Plotter(object):
 
-    def __init__(self):
+    def __init__(self, path = ".", name = "onemax"):
         self.generations = []
         self.max_fitness = []
         self.avg_fitness = []
         self.std_dev_fitness = []
+        self.name = name
+        self.path = path
 
     def update (self, generation, population):
-        children = population.children[:]
-        fitness = [i.fitness_value for i in children]
+        self.children = copy.deepcopy(population.children[:])
+        fitness = [i.fitness_value for i in self.children]
         fitness_size = len(fitness)
 
         self.generations.append(generation)
 
         self.max_fitness.append(max(fitness))
 
+        print "**** *** * *** SUM FITNESS %d *** ** ******* " %sum(fitness)
+
         avg = sum(fitness)/fitness_size
         self.avg_fitness.append(avg)
 
-        e_square = sum(map(lambda x: math.pow(float(x), 2.0), fitness)) / fitness_size
-        self.std_dev_fitness.append(2.0 * math.sqrt(e_square - math.pow(avg, 2.0)))
+        e_square = sum(math.pow(i, 2.0) for i in fitness)/fitness_size
+        self.std_dev_fitness.append(math.sqrt(e_square - math.pow(avg, 2.0)))
 
     def plot (self):
-        plt.plot(self.generations, self.max_fitness, 'r', self.generations, self.avg_fitness, 'b', self.generations, self.std_dev_fitness, 'g')
-        plt.show()
-       
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+
+        ax.plot(self.generations, self.max_fitness, 'r', label="Max") 
+        ax.plot(self.generations, self.avg_fitness, 'b', label="Avg")
+        ax.plot(self.generations, self.std_dev_fitness, 'g', label="Std_Dev")
+        plt.xlabel('Generation')
+        plt.ylabel('Fitness')
+        plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.12), ncol=3)
+
+        #plt.show()
+        fig.savefig(self.find_filename(self.name))
+
+    def find_filename(self, filename):
+        max_int = 0
+        for file in os.listdir(self.path):
+            if fnmatch.fnmatch(file, filename + '.*.png'):
+                tmp_int = int(re.sub(r'[^\d+]', '', file))
+                if tmp_int > max_int:
+                    max_int = int(tmp_int)
+
+        return self.path + "/" + filename + "." + str(max_int+1) + ".png"
+
 
     def print_data(self):
         print 'Generations: \n'

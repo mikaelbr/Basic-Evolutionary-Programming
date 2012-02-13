@@ -1,5 +1,6 @@
 from Indevidual import *
 import random
+import copy
 
 class EA:
 
@@ -33,8 +34,7 @@ class EA:
             Run through entire population and calculate 
             fitness/strength.
         """
-        for i in self.population.get_total_population():
-            i.fitness()
+        self.population.test_fitness()
         
 
     def adult_select(self):
@@ -42,7 +42,7 @@ class EA:
             self.adult_selection.select(self.population);
         else:
             this.population.adults = this.population.children[:]
-            this.population.children = []
+        self.population.children = []
 
     def parent_select(self):
         if self.parent_selection is not None:
@@ -52,7 +52,7 @@ class EA:
     def birth(self):
         if self.reproduction is None:
             return
-        
+
         parents = self.population.parents
         for i in range(0, len(parents)-1, 2):
             child1, child2 = parents[i], parents[i+1]
@@ -60,8 +60,9 @@ class EA:
             if self.reproduction.birth_probability > random.random():
                 child1, child2 = self.reproduction.do(child1, child2)
 
-            self.population.children.append(child1)
-            self.population.children.append(child2)
+            self.population.children.append(copy.deepcopy(child1))
+            self.population.children.append(copy.deepcopy(child2))
+
 
         
 
@@ -74,10 +75,7 @@ class EA:
                 self.mutation.do(item)
         
 
-
-    
     def loop(self):
-
 
         # initialize child genotype population
         self.population.fill() # Lots of childeren
@@ -90,14 +88,44 @@ class EA:
             # Test fitness of Phenotypes
             self.test_fitness()
 
+            print "----------- GENERATION %d ------------" % generation
+
             # Do plotting
-            self.plotter.update(generation, self.population)
+            if self.plotter is not None:
+                self.plotter.update(generation, self.population)
+
+            # print "PRE ADULTS"
+            print "Length: %d" % len(self.population.children)
+            for item in self.population.children[:]:
+                fitness = item.fitness_value;
+
+                if fitness is None:
+                    fitness = 0
+                print "Value %s, fitness: %d" % (item.phenotype, fitness)
 
             # Adult selection
             self.adult_select()
 
+            # print "ADULTS"
+            # print "Length: %d" % len(self.population.adults)
+            # for item in self.population.adults[:]:
+            #     fitness = item.fitness_value;
+
+            #     if fitness is None:
+            #         fitness = 0
+            #     print "Value %s, fitness: %d" % (item.value, fitness)
+
             # Parent selection
             self.parent_select()
+
+            # print "PARENTS"
+            # print "Length: %d" % len(self.population.parents)
+            # for item in self.population.parents[:]:
+            #     fitness = item.fitness_value;
+
+            #     if fitness is None:
+            #         fitness = 0
+            #     print "Value %s, fitness: %d" % (item.value, fitness)
 
             # Now the parents-attribute in the Population should
             # be filled and ready for reproduction.
@@ -105,6 +133,23 @@ class EA:
             # Reproduction
             self.birth()
             self.mutate()
+
+            print "LAST STEP"
+            print "Length: %d" % len(self.population.children)
+            for item in self.population.children[:]:
+
+                fitness = item.fitness_value;
+
+                if fitness is None:
+                    fitness = 0
+                print "Value %s, fitness: %d" % (item.value, fitness)
+
+            item = self.population.children
+            for i in range(len(item[:])-1):
+                print "Testing duplicates"
+                if item[i] == item[i+1]:
+                    print "-----\n------\n------\n-----------\n------\n------\n------FUCKING DUPLICATIONS UP IN HEA!-----\n------\n------\n-----------\n------\n------\n------"
+            
 
             # Intitiate Jean-Luc Picard; The Next Generation
         

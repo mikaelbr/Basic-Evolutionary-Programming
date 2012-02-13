@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from operator import attrgetter
 import random
 import math
+import copy
 
 class SelectionProtocol(object):
     """
@@ -24,9 +25,8 @@ class SelectionProtocol(object):
 class FullReplacement(SelectionProtocol):
 
     def do(self):
-        self.population.kill_adults()
         self.population.adults = self.population.children[:]
-        self.population.remove_children()
+        self.population.children = []
 
 
 class OverProduction(FullReplacement):
@@ -39,7 +39,7 @@ class GenerationalMixing(SelectionProtocol):
 
     def do(self):
         self.population.adults += self.population.children[:]
-        self.population.remove_children()
+        self.population.children = []
         self.population.adults = self.reduce_pool(self.population.adults)
 
 
@@ -64,15 +64,28 @@ class SelectionMechanism(object):
         # Calculate size of sectors
         tmp_population = self.population.adults[:]
         wheel = []
+        accumulated = 0.0
+
         for adult in tmp_population:
-            wheel.append((adult, self.probability_func(adult.fitness_value)))
-        
+            accumulated += self.probability_func(adult.fitness_value)
+            wheel.append((adult, accumulated))
+
+        # print "Wheel"
+        # for adult, probability in wheel:
+        #     print "Value %s, fitness %s, prob %s" % (adult.value, adult.fitness_value, probability)
+
         new_population = []
         while (len(new_population) < min([self.size, len(tmp_population)])):
             limit = random.random();
             for adult, probability in wheel:
                 if probability > limit:
                     new_population.append(adult)
+                    break
+        
+        # print "New Population"
+        # for adult in new_population:
+        #     print "Value %s, fitness %s" % (adult.value, adult.fitness_value)
+
 
         self.population.parents = new_population[:]
         return self.population.parents
@@ -84,12 +97,11 @@ class FitnessProportionate(SelectionMechanism):
         Normalized
     """
 
-
     def set_values(self):
         self.total = sum(map(attrgetter('fitness_value'), self.population.adults[:]))
 
     def probability_func (self, fitness):
-        return float(fitness) / float(self.total)
+        return (fitness) / float(self.total)
 
     def do(self):
         self.set_values();
@@ -105,19 +117,19 @@ class SigmaScaling(SelectionMechanism):
     """
 
     def set_values(self):
-        tmp_population = self.population.adults[:]
-        self.pop_length = float(len(tmp_population))
-        self.avg_fitness = sum(map(attrgetter('fitness_value'), tmp_population)) / self.pop_length
+        fitness = [i.fitness_value for i in self.population.adults[:]]
+        self.pop_length = float(len(fitness))
+        self.avg_fitness = sum(fitness) / self.pop_length
 
         # Var
-        e_square = sum(map(lambda x: math.pow(float(x.fitness_value), 2.0), tmp_population)) / self.pop_length
-        self.std_deviation = 2.0 * math.sqrt(e_square - math.pow(self.avg_fitness, 2.0))
-
-        if self.std_deviation == 0:
-            self.std_deviation = 0.00000001
+        e_square = sum(math.pow(i, 2) for i in fitness) / self.pop_length
+        self.std_deviation = math.sqrt(e_square - math.pow(self.avg_fitness, 2.0))
 
     def probability_func (self, fitness):
-        return (1.0 + ((fitness - self.avg_fitness) / self.std_deviation))
+        if self.std_deviation == 0:
+            return 1.0
+        
+        return ((1.0 + ((fitness - self.avg_fitness) / (2*self.std_deviation))) / self.pop_length)
 
     def do(self):
         self.set_values();
@@ -135,7 +147,7 @@ class Tournament(SelectionMechanism):
         while (len(new_population) < min([self.size, len(tmp_population)])):
             adults = random.sample(tmp_population, k)
             adults.sort(key=attrgetter('fitness_value'), reverse=True)
-            new_population.append(adults[int(random.random() < e)])
+            new_population.append(adults[int(random.random() > e)])
         
         self.population.parents = new_population[:]
         return self.population.parents
@@ -166,7 +178,6 @@ class SelectionStrategy(object):
         # Check if we have protocol defined for the strategy
         if self.protocol_name is not None:
             if self.protocol is None:
-                print self.protocol_name
                 self.protocol = self.protocol_name(self.size, population)
 
             # Do selection protocol
@@ -176,7 +187,7 @@ class SelectionStrategy(object):
             if len(population.adults) < self.size:
                 population.adults.sort(key=attrgetter('fitness_value'), reverse=True)
                 for i in range(self.size - len(population.adults)):
-                    population.adults.append(population.adults[i % len(population.adults)])
+                    population.adults.append(copy.deepcopy(population.adults[i % len(population.adults)]))
 
 
         # Check if we have mechanism defined for the strategy
@@ -192,7 +203,7 @@ class SelectionStrategy(object):
             if len(population.parents) < self.size:
                 population.parents.sort(key=attrgetter('fitness_value'), reverse=True)
                 for i in range(self.size - len(population.parents)):
-                    population.parents.append(population.parents[i % len(population.parents)])
+                    population.parents.append(copy.deepcopy(population.parents[i % len(population.parents)]))
 
 
 
