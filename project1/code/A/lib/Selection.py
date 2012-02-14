@@ -70,13 +70,13 @@ class SelectionMechanism(object):
             accumulated += self.probability_func(adult.fitness_value)
             wheel.append((adult, accumulated))
 
-        # print "Wheel"
-        # for adult, probability in wheel:
-        #     print "Value %s, fitness %s, prob %s" % (adult.value, adult.fitness_value, probability)
+        print "Wheel"
+        for adult, probability in wheel:
+            print "Value %s, fitness %s, prob %s" % (adult.value, adult.fitness_value, probability)
 
         new_population = []
         while (len(new_population) < min([self.size, len(tmp_population)])):
-            limit = random.random();
+            limit = random.uniform(0, accumulated);
             for adult, probability in wheel:
                 if probability > limit:
                     new_population.append(adult)
@@ -98,7 +98,7 @@ class FitnessProportionate(SelectionMechanism):
     """
 
     def set_values(self):
-        self.total = sum(map(attrgetter('fitness_value'), self.population.adults[:]))
+        self.total = sum([i.fitness_value for i in self.population.adults[:]])
 
     def probability_func (self, fitness):
         return (fitness) / float(self.total)
@@ -204,10 +204,4 @@ class SelectionStrategy(object):
                 population.parents.sort(key=attrgetter('fitness_value'), reverse=True)
                 for i in range(self.size - len(population.parents)):
                     population.parents.append(copy.deepcopy(population.parents[i % len(population.parents)]))
-
-
-
-
-
-
 

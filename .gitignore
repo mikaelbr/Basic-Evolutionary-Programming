@@ -1,2 +1,11 @@
+
+# TeX Files
+*.aux
+*.toc
+*.log
+
+$ Python compiled files
 *.pyc
+
+# Mac spesific files
 .DS_Store

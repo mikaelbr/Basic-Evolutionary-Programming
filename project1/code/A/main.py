@@ -1,5 +1,6 @@
-#! /usr/bin/env python
+#! /usr/bin/env ipython
 # -*- coding: utf-8 -*-
+
 """
 ---------------------------------------------------------------------------
 *               ONE MAX Solution - Evolutionary Algorithms                *
@@ -16,10 +17,12 @@
 ---------------------------------------------------------------------------
 *                         // EXAMPLE RUN //                               *
 ---------------------------------------------------------------------------
-
+[Will run with all standard options]
 $ ipython main.py 
 
 
+To use different selection strategy and reproduction/mutation, you have to
+do this by hand (code)
 ---------------------------------------------------------------------------
 *               ONE MAX Solution - Evolutionary Algorithms                *
 ---------------------------------------------------------------------------
@@ -78,15 +81,17 @@ def create_binary_vector(fitness_test, gene_size):
 if __name__ == "__main__":
 
     import argparse
+    from IPython.config import loader
 
-    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+
+    parser = loader.ArgumentParser(version='0.1', description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument(
         '-o', 
         action="store", 
         dest="output_file",
         type=str, 
-        default=None,
+        default="onemax",
         help='The threshold, if not optimized')
 
     parser.add_argument(
@@ -94,7 +99,7 @@ if __name__ == "__main__":
         dest="pop_size",
         type=float,
         action="store", 
-        default=20,
+        default=100,
         help='Population size')
 
     parser.add_argument(
@@ -102,7 +107,7 @@ if __name__ == "__main__":
         action="store", 
         dest="mutation_probability",
         type=float, 
-        default=0.25,
+        default=0.0,
         help='Mutation probability')
 
     parser.add_argument(
@@ -110,7 +115,7 @@ if __name__ == "__main__":
         action="store", 
         dest="birth_probability",
         type=float, 
-        default=1.0,
+        default=0.91,
         help='Birth probability')
 
     parser.add_argument(
@@ -142,15 +147,13 @@ if __name__ == "__main__":
 
     print args
 
-    print "Size: %d " % pop_size
-
     population = Population(pop_size, create_binary_vector(fitness_test, geno_size))
 
     adult_selection = SelectionStrategy(output_size, FullReplacement)
-    parent_selection = SelectionStrategy(pop_size, None, SigmaScaling)
+    parent_selection = SelectionStrategy(pop_size, None, FitnessProportionate)
 
-    reproduction = BinaryUniformCrossover(birth_probability) # Birth probability
-    mutation = BinaryStringInversion(mutation_probability) # Mutation probability
+    reproduction = BinaryUniformCrossover(birth_probability) #, 0.3) # Birth probability
+    mutation = BinaryStringInversion(mutation_probability, 2) # Mutation probability
 
     if output_file is not None:
         plotter = Plotter("./plots", output_file)
@@ -159,18 +162,6 @@ if __name__ == "__main__":
 
     ea = EA(population, adult_selection, parent_selection, reproduction, mutation, generations, plotter)
     ea.loop()
-
-    print "Length: %d" % len(ea.population.children)
-    for item in ea.population.children[:]:
-
-        item.toPhenotype()
-        item.fitness()
-        fitness = item.fitness_value;
-
-        if fitness is None:
-            fitness = 0
-        print "Value %s, fitness: %d" % (item.value, fitness)
-
 
     if plotter is not None:
         plotter.plot()

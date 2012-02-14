@@ -41,7 +41,7 @@ class EA:
         if self.adult_selection is not None:
             self.adult_selection.select(self.population);
         else:
-            this.population.adults = this.population.children[:]
+            this.population.adults = self.population.children[:]
         self.population.children = []
 
     def parent_select(self):
@@ -134,21 +134,6 @@ class EA:
             self.birth()
             self.mutate()
 
-            print "LAST STEP"
-            print "Length: %d" % len(self.population.children)
-            for item in self.population.children[:]:
-
-                fitness = item.fitness_value;
-
-                if fitness is None:
-                    fitness = 0
-                print "Value %s, fitness: %d" % (item.value, fitness)
-
-            item = self.population.children
-            for i in range(len(item[:])-1):
-                print "Testing duplicates"
-                if item[i] == item[i+1]:
-                    print "-----\n------\n------\n-----------\n------\n------\n------FUCKING DUPLICATIONS UP IN HEA!-----\n------\n------\n-----------\n------\n------\n------"
             
 
             # Intitiate Jean-Luc Picard; The Next Generation

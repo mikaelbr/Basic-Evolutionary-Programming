@@ -1,0 +1,40 @@
+\documentclass[a4paper, 11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx} % support graphics
+\usepackage{hyperref} % links in the document
+\usepackage{fullpage} % smaller margins
+\usepackage{float} % position of figures
+
+% Command for adding plots
+\newcommand{\myplot}[3][h!]{
+\begin{figure}[#1]
+    \begin{center}
+        \includegraphics[width=0.65\textwidth]{plots/#2}
+    \end{center}
+    \caption{#3}
+    \label{fig:#2}
+\end{figure}
+}
+
+\title{Project 1.A: \\ Programming the Basics of an \\ Evolutionary Algorithm(EA)}
+\author{Mikael Brevik}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+\chapter{Introduction}
+\input{assignment}
+
+\chapter{Deliverables}	
+\input{deliverables_a1}
+\input{deliverables_a2}
+\input{deliverables_a3}
+\input{deliverables_a4}
+\input{deliverables_a5}
+
+\end{document}

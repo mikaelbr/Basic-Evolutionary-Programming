@@ -1,3 +1,4 @@
+#! /usr/bin/env ipython
 # -*- coding: utf-8 -*-
 
 """
@@ -70,7 +71,7 @@ class BattleStrategy(Indevidual):
         if sum(weights) == 0:
             weight_len = len(weights)
             for i in range(len(weights)):
-                weights[i] = 1/len(weight_len)
+                weights[i] = 1/float(weight_len)
 
         # Normalize
         self.phenotype = [(i / float(sum(weights))) for i in weights]
@@ -84,11 +85,15 @@ class BattleStrategy(Indevidual):
             H(s) = - ∑(p_i * log_2(p_i), from: i=1, to: B)
             Where p_i is the fraction of ith battle (one element of phenotype) 
         """
-        
-        return -1.0 * sum([battle*math.log(battle, 1) for battle in self.phenotype if self.phenotype is not None])
+        return -1.0 * sum([battle*math.log(battle, 2) for battle in self.phenotype if battle])
 
-    
 
+class RandomChangeValue(Mutation):
+
+     def do(self, g1):
+        random_position = random.randint(0, (len(g1.value)-4)/4) * 4
+        new_value = '{:04b}'.format(int(random.randint(0,10)))
+        g1.value = ''.join([g1.value[:random_position], new_value, g1.value[random_position+4:]])
 
 
 class Colonels(Population):
@@ -117,12 +122,9 @@ class Colonels(Population):
         # different strategies.
 
         battles = self.children[0].battles
-
-        print self.children
-
         pop = self.children[:]
 
-        def fight (child1, child2):
+        def do_battle(child1, child2):
 
             # if child1.fitness_value is None:
             #     child1.fitness_value = 0
@@ -136,8 +138,6 @@ class Colonels(Population):
             strength1 = strength2 = 1.0
             
             for battle in range(battles):
-
-
                 # List up resources for this battle. 
                 # Take reployment in account. 
                 resource1 = child1.phenotype[battle] + reployment1
@@ -170,24 +170,29 @@ class Colonels(Population):
 
             if child1_victories == child2_victories:
                 # Draw - both get 1 point
-                child1.fitness_value += 1
-                child2.fitness_value += 1
+                child1.fitness_value += BATTLE_POINT['TIE']
+                child2.fitness_value += BATTLE_POINT['TIE']
             elif child1_victories > child2_victories:
                 # Child 1 won, Child 2 lost
-                child1.fitness_value += 2
+                child1.fitness_value += BATTLE_POINT['WIN']
             else:
                 # Child 2 won, CHild 1 lost
-                child2.fitness_value += 2
+                child2.fitness_value += BATTLE_POINT['WIN']
 
 
         for i in range(len(pop)-1):
             for j in range(i+1, len(pop)):
                 # Will have the cross product of all 
                 # children
-                fight(pop[i], pop[j])
-                
+                do_battle(pop[i], pop[j])
+
+
 
 class BlottoPlotter(Plotter):
+
+    def __init__(self, path = ".", name = "onemax"):
+        super(BlottoPlotter, self).__init__(path, name)
+        self.avg_entropy = []
 
     def update (self, generation, population):
         super(BlottoPlotter, self).update(generation, population)
@@ -208,7 +213,7 @@ class BlottoPlotter(Plotter):
         plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.12), ncol=3)
 
         #plt.show()
-        fig.savefig(self.find_filename(self.name))
+        fig.savefig(self.find_filename(self.name + ".entropy"))
 
 # Fitness function
 def fitness_func(phenotype_value):
@@ -262,7 +267,7 @@ if __name__ == "__main__":
         action="store", 
         dest="mutation_probability",
         type=float, 
-        default=0.1,
+        default=0.4,
         help='Mutation probability')
 
     parser.add_argument(
@@ -270,7 +275,7 @@ if __name__ == "__main__":
         action="store", 
         dest="birth_probability",
         type=float, 
-        default=0.3,
+        default=0.6,
         help='Birth probability')
 
     parser.add_argument(
@@ -278,15 +283,15 @@ if __name__ == "__main__":
         action="store", 
         dest="geno_size",
         type=int,
-        default=4,
-        help='Geno size. Number of bits.')
+        default=10,
+        help='Number of battles.')
 
     parser.add_argument(
         '-g', 
         action="store", 
         dest="generations",
         type=int,
-        default=200,
+        default=400,
         help='Number of generations')
 
 
@@ -294,7 +299,7 @@ if __name__ == "__main__":
 
     pop_size = args.pop_size
     generations = args.generations
-    output_size = 4
+    output_size = 15 # int(pop_size - (pop_size/5))
     birth_probability = args.birth_probability
     mutation_probability = args.mutation_probability
     battles = args.geno_size
@@ -304,14 +309,14 @@ if __name__ == "__main__":
 
     population = Colonels(pop_size, create_binary_vector(battles))
 
-    adult_selection = SelectionStrategy(output_size, FullReplacement)
-    parent_selection = SelectionStrategy(pop_size, None, FitnessProportionate)
+    adult_selection = SelectionStrategy(output_size, GenerationalMixing)
+    parent_selection = SelectionStrategy(pop_size, None, SigmaScaling)
 
-    reproduction = BinaryUniformCrossover(birth_probability) # Birth probability
-    mutation = BinaryStringInversion(mutation_probability, 1) # Mutation probability
+    reproduction = BinaryTwoPointCrossover(birth_probability) # Birth probability
+    mutation = RandomChangeValue(mutation_probability) # Mutation probability
 
     if output_file is not None:
-        plotter = Plotter("./plots", output_file)
+        plotter = BlottoPlotter("./plots", output_file)
     else:
         plotter = None
 
@@ -322,4 +327,5 @@ if __name__ == "__main__":
 
     if plotter is not None:
         plotter.plot()
+        plotter.plot_entropy()
 

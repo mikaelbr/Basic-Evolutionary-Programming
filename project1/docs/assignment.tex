@@ -1,0 +1,41 @@
+\section{About the project}
+The purpose with this project is to gain expirience with the basic mechanisms underlying EAs
+by programming them.
+
+The entire project consists of two parts; A) Implementing basic modular EA , and B) using that 
+algorithm to solve a Colonel Blotto problem.  
+
+This document will focus on part A, implementing the basic evolutionary algorithm and testing
+that algorithm by solving a One Max problem
+
+\section{EA Overview}
+The evolutionary algorithm we're implementing in this assignment includes the following aspects:
+
+\begin{enumerate}
+
+	\item A population for reperesenting indeviduals with genotypes.
+	
+	\item A development phase, for converting genotypes to phenotypes.
+	
+	\item A fitness test for calculating fitness of all phenotypes.
+	
+	\item Selection protocols for finding adults from the indeviduals
+	
+	\item Selection mechanism for finding parents from the adults. 
+	
+	\item Reproduction for creating children from parents. Taking parts from each of the parent's genos. 
+	
+	\item Mutation for altering the childrens genotype. 
+
+\end{enumerate}
+
+\noindent{The EA will loop through these items many generations. There must also exist a plotting 
+functionality for analyzing and visualizing the results.}
+
+\section{The One-Max Problem}
+
+For testing out the EA, the One-Max problem will be used. The goal of the One-Max problem is to find a 
+bit string consisting only of 1's. The initial genotype will be a random n-bit string. With using the number
+of 1's as fitness, throughout the generations the bit strings should evolve to consist only of 1's. 
+
+The programmed EA should be able to solve a 40-bit One-Max problem. 
