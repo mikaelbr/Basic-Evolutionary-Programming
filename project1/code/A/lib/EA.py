@@ -17,8 +17,6 @@ class EA:
         """
             Converting the genotypes into phonotypes. 
         """
-
-        # Rewrite to take account for the adults and childeren. 
         new_population = []
         for item in self.population.children:
             if item.phenotype is None:
@@ -64,8 +62,6 @@ class EA:
             self.population.children.append(copy.deepcopy(child2))
 
 
-        
-
     def mutate(self):
         if self.mutation is None:
             return
@@ -88,14 +84,12 @@ class EA:
             # Test fitness of Phenotypes
             self.test_fitness()
 
-            print "----------- GENERATION %d ------------" % generation
 
             # Do plotting
             if self.plotter is not None:
                 self.plotter.update(generation, self.population)
 
             # print "PRE ADULTS"
-            print "Length: %d" % len(self.population.children)
             for item in self.population.children[:]:
                 fitness = item.fitness_value;
 
@@ -106,26 +100,9 @@ class EA:
             # Adult selection
             self.adult_select()
 
-            # print "ADULTS"
-            # print "Length: %d" % len(self.population.adults)
-            # for item in self.population.adults[:]:
-            #     fitness = item.fitness_value;
-
-            #     if fitness is None:
-            #         fitness = 0
-            #     print "Value %s, fitness: %d" % (item.value, fitness)
-
             # Parent selection
             self.parent_select()
 
-            # print "PARENTS"
-            # print "Length: %d" % len(self.population.parents)
-            # for item in self.population.parents[:]:
-            #     fitness = item.fitness_value;
-
-            #     if fitness is None:
-            #         fitness = 0
-            #     print "Value %s, fitness: %d" % (item.value, fitness)
 
             # Now the parents-attribute in the Population should
             # be filled and ready for reproduction.
@@ -133,8 +110,6 @@ class EA:
             # Reproduction
             self.birth()
             self.mutate()
-
-            
 
             # Intitiate Jean-Luc Picard; The Next Generation
         

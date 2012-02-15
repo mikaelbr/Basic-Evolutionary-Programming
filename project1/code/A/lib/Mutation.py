@@ -10,10 +10,6 @@ class Mutation(object):
     def do(self):
         pass
 
-    
-
-
-
 class BinaryStringInversion(Mutation):
 
     def __init__(self, mutation_probability, bits = 1):

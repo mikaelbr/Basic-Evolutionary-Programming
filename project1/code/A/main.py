@@ -37,8 +37,6 @@ from lib.Mutation import *
 from lib.Population import *
 from lib.Plotter import *
 
-
-
 # Genotype/Phenotype subclass
 class BinaryVector(Indevidual):
 
@@ -68,7 +66,7 @@ def fitness_test(phenotype_value):
 # Closure function for deliverable 5 in project A
 def fitness_test_target_bitstring(gene_size):
     bitstring_target = [int(random.choice(('0', '1'))) for i in range(gene_size)]
-    print "BITSTRING TARGET: %s" % bitstring_target
+
     def fitness_test(phenotype_value):
         fitness = 0
         for i in range(len(bitstring_target)):
@@ -84,7 +82,8 @@ def create_binary_vector(fitness_test, gene_size):
         This way we can initiate the Indevidual subclass with 
         arbitrary number of arguments
     """
-    #fitness_func_target = fitness_test_target_bitstring(gene_size)
+    # Used for assignment 5 in project A
+    # fitness_func_target = fitness_test_target_bitstring(gene_size)
     fitness_func_target = fitness_test
     def inner_closure ():
         return BinaryVector(gene_size, fitness_func_target)

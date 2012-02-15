@@ -26,9 +26,6 @@ class Plotter(object):
         self.generations.append(generation)
 
         self.max_fitness.append(max(fitness))
-
-        print "**** *** * *** SUM FITNESS %d *** ** ******* " %sum(fitness)
-
         avg = sum(fitness)/fitness_size
         self.avg_fitness.append(avg)
 

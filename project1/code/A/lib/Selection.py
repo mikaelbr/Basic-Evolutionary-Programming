@@ -70,12 +70,6 @@ class SelectionMechanism(object):
             accumulated += self.probability_func(adult.fitness_value)
             wheel.append((adult, accumulated))
 
-        # print "Wheel"
-        # for adult, probability in wheel:
-        #     print "Value %s, fitness %s, prob %s" % (adult.value, adult.fitness_value, probability)
-
-        # GO through all indivituals and do an un-bias select. 
-        # Do so until the new adult population is filled up. 
         new_population = []
         while (len(new_population) < min([self.size, len(tmp_population)])):
             limit = random.uniform(0, accumulated);
@@ -84,11 +78,6 @@ class SelectionMechanism(object):
                 if probability > limit:
                     new_population.append(copy.deepcopy(adult))
                     break
-        
-        # print "New Population"
-        # for adult in new_population:
-        #     print "Value %s, fitness %s" % (adult.value, adult.fitness_value)
-
 
         self.population.parents = new_population[:]
         return self.population.parents
