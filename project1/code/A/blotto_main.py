@@ -251,14 +251,14 @@ std_values = {
     'pop_size':  20,
     'mutation_probability': 0.04,
     'birth_probability': 0.35,
-    'geno_size': 5, # Battles
+    'geno_size': 20, # Battles
     'generations': 200,
     'protocol': 'FullReplacement',
     'mechanism': 'SigmaScaling',
     'reproduction': 'BinaryUniformCrossover',
     'elitism': 2,
     'truncation': 0,
-    'reployment': 1.0,
+    'reployment': 0.3,
     'reduction': 1.0
 }
 
