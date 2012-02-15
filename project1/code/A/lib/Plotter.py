@@ -52,12 +52,12 @@ class Plotter(object):
     def find_filename(self, filename):
         max_int = 0
         for file in os.listdir(self.path):
-            if fnmatch.fnmatch(file, filename + '.*.png'):
+            if fnmatch.fnmatch(file, filename + '-*.png'):
                 tmp_int = int(re.sub(r'[^\d+]', '', file))
                 if tmp_int > max_int:
                     max_int = int(tmp_int)
 
-        return self.path + "/" + filename + "." + str(max_int+1) + ".png"
+        return self.path + "/" + filename + "-" + str(max_int+1) + ".png"
 
 
     def print_data(self):

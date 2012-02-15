@@ -37,6 +37,8 @@ from lib.Mutation import *
 from lib.Population import *
 from lib.Plotter import *
 
+
+
 # Genotype/Phenotype subclass
 class BinaryVector(Indevidual):
 
@@ -63,6 +65,17 @@ def fitness_test(phenotype_value):
     """
     return sum(phenotype_value)
 
+# Closure function for deliverable 5 in project A
+def fitness_test_target_bitstring(gene_size):
+    bitstring_target = [int(random.choice(('0', '1'))) for i in range(gene_size)]
+    print "BITSTRING TARGET: %s" % bitstring_target
+    def fitness_test(phenotype_value):
+        fitness = 0
+        for i in range(len(bitstring_target)):
+            if bitstring_target[i] == phenotype_value[i]:
+                fitness += 1
+        return fitness
+    return fitness_test
 
 
 def create_binary_vector(fitness_test, gene_size):
@@ -71,12 +84,29 @@ def create_binary_vector(fitness_test, gene_size):
         This way we can initiate the Indevidual subclass with 
         arbitrary number of arguments
     """
-
+    #fitness_func_target = fitness_test_target_bitstring(gene_size)
+    fitness_func_target = fitness_test
     def inner_closure ():
-        return BinaryVector(gene_size, fitness_test)
+        return BinaryVector(gene_size, fitness_func_target)
 
     return inner_closure
 
+
+# Default values for all params. 
+std_values = {
+    'output_file': 'onemax',
+    'do_plot': True,
+    'pop_size':  20,
+    'mutation_probability': 0.2,
+    'birth_probability': 0.6,
+    'geno_size': 40,
+    'generations': 100,
+    'protocol': 'FullReplacement',
+    'mechanism': 'SigmaScaling',
+    'reproduction': 'BinaryUniformCrossover',
+    'elitism': 0,
+    'truncation': 0,
+}
 
 if __name__ == "__main__":
 
@@ -91,15 +121,22 @@ if __name__ == "__main__":
         action="store", 
         dest="output_file",
         type=str, 
-        default="onemax",
+        default=std_values['output_file'],
         help='The threshold, if not optimized')
+
+    parser.add_argument(
+        '-noplot', 
+        dest="do_plot",
+        action="store_false", 
+        default=std_values['do_plot'],
+        help='A boolean value ')
 
     parser.add_argument(
         '-ps', 
         dest="pop_size",
         type=float,
         action="store", 
-        default=100,
+        default=std_values['pop_size'],
         help='Population size')
 
     parser.add_argument(
@@ -107,7 +144,7 @@ if __name__ == "__main__":
         action="store", 
         dest="mutation_probability",
         type=float, 
-        default=0.0,
+        default=std_values['mutation_probability'],
         help='Mutation probability')
 
     parser.add_argument(
@@ -115,15 +152,32 @@ if __name__ == "__main__":
         action="store", 
         dest="birth_probability",
         type=float, 
-        default=0.91,
+        default=std_values['birth_probability'],
         help='Birth probability')
+
+
+    parser.add_argument(
+        '-e', 
+        action="store", 
+        dest="elitism",
+        type=float, 
+        default=std_values['elitism'],
+        help='Elitism ( e < 1 means fraction ). ')
+
+    parser.add_argument(
+        '-t', 
+        action="store", 
+        dest="truncation",
+        type=float, 
+        default=std_values['truncation'],
+        help='truncation - a fraction ')
 
     parser.add_argument(
         '-s', 
         action="store", 
         dest="geno_size",
         type=int,
-        default=40,
+        default=std_values['geno_size'],
         help='Geno size. Number of bits.')
 
     parser.add_argument(
@@ -131,36 +185,65 @@ if __name__ == "__main__":
         action="store", 
         dest="generations",
         type=int,
-        default=100,
+        default=std_values['generations'],
         help='Number of generations')
+
+    parser.add_argument(
+        '-protocol', 
+        action="store", 
+        dest="protocol",
+        type=str, 
+        default=std_values['protocol'],
+        help='The protocol for using adult selection')
+
+    parser.add_argument(
+        '-mechanism', 
+        action="store", 
+        dest="mechanism",
+        type=str, 
+        default=std_values['mechanism'],
+        help='The mechanism for using parent selection')
+
+    parser.add_argument(
+        '-reproduction', 
+        action="store", 
+        dest="reproduction",
+        type=str, 
+        default=std_values['reproduction'],
+        help='The reproduction method')
+
+    import sys
+    import types
+    
+    def str_to_class(field):
+        try:
+            identifier = getattr(sys.modules[__name__], field)
+        except AttributeError:
+            raise NameError("%s doesn't exist." % field)
+        if isinstance(identifier, (types.ClassType, types.TypeType)):
+            return identifier
+        raise TypeError("%s is not a class." % field)
 
 
     args = parser.parse_args()
-
-    pop_size = args.pop_size
-    generations = args.generations
-    output_size = int(pop_size - (pop_size/5))
-    birth_probability = args.birth_probability
-    mutation_probability = args.mutation_probability
-    geno_size = args.geno_size
-    output_file = args.output_file
+    output_size = int(args.pop_size * 0.1)
 
     print args
 
-    population = Population(pop_size, create_binary_vector(fitness_test, geno_size))
+    population = Population(args.pop_size, create_binary_vector(fitness_test, args.geno_size))
 
-    adult_selection = SelectionStrategy(output_size, FullReplacement)
-    parent_selection = SelectionStrategy(pop_size, None, FitnessProportionate)
+    adult_selection = SelectionStrategy(output_size, str_to_class(args.protocol))
+    parent_selection = SelectionStrategy(args.pop_size, None, str_to_class(args.mechanism), args.elitism, args.truncation)
 
-    reproduction = BinaryUniformCrossover(birth_probability) #, 0.3) # Birth probability
-    mutation = BinaryStringInversion(mutation_probability, 2) # Mutation probability
+    reproduction = str_to_class(args.reproduction)(args.birth_probability) # , 0.3) # Birth probability
+    mutation = BinaryStringInversion(args.mutation_probability) # Mutation probability
 
-    if output_file is not None:
-        plotter = Plotter("./plots", output_file)
+    if args.output_file is not None and args.do_plot is True:
+        plotter = Plotter("./plots", args.output_file)
     else:
         plotter = None
 
-    ea = EA(population, adult_selection, parent_selection, reproduction, mutation, generations, plotter)
+    ea = EA(population, adult_selection, parent_selection, reproduction, mutation, args.generations, plotter)
     ea.loop()
 
     if plotter is not None:

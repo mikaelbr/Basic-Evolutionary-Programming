@@ -1,1 +1,21 @@
 \section{Selection mechanism with the best results}
+By holding the population size at a massive 200, and number of generations at 100, with crossover
+probability 90\% and uniform, I tried different selection mechanisms for the EA. 
+
+Straight away there were massive changes. The first mechanism I tried was SigmaScaling. Only after
+around 20 generations a consistent solution across the population was found. Several testruns were tried
+and it had massive advandages every time. As seen in \autoref{fig:onemax-6}, the evolution still has what
+seems like a good convergance, in a stair shaped increase over generations.
+
+\insertplot{onemax-6}{Population 200, Generations 100. With Sigma Scaling as selection mechanism. 
+Highly increased performance from fitness-proportionate.}
+
+Also Tournament selection mechanism has a high advantage from the fitness-proportionate. By still using
+the same parameters the tournament mechanism found a solution within 40 generations. This mechanism
+was a bit more inconsistent and varied more than Sigma Scaling. 
+
+\insertplot{onemax-6}{Population 200, Generations 100. With Tournament as selection mechanism. 
+Highly increased performance from fitness-proportionate.}
+
+As seen from both the tournament run and sigma scaling, both parent selection mechanisms have greatly
+increased the performance of the One-Max problem runs.

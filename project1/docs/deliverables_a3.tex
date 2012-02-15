@@ -1,1 +1,49 @@
 \section{Analysis of the performance}
+
+I started, as the assignment described, with selection protocol full generational replacement and the mechanism
+fitness-proportionate. With implementation of any reproduction or mutation, the indivituals will never change
+over the generation. So the fitness-proportionate will find the fittest of the random initial phenotypes, and copy
+them over time. Eventually we se that the max fitness is consistent and the average fitness will coverge to the 
+max fitness. This is clearly observable in \autoref{fig:onemax-1}
+
+\insertplot{onemax-1}{EA with no genetic functions. Population size 200 and 100 generations}
+
+There won't be much sense in trying to increase the population size, without any reproduction or mutation for
+each generation. So to implement a reproduction of the simplest form, with one-point crossover, but still no 
+mutation. The population size and number of generations remained the same. The slice for the crossover is at
+random. The reproduction probability is set at 50\%. 
+
+\insertplot{onemax-2}{Run with pop size 200 and one-pit reproduction prob. at 50\%. Splice at random}
+
+As seen in \autoref{fig:onemax-2}, even at 200 in population size the EA can't find a solution. It seems as the 
+point stagnets. After more test runs the EA found the solution some times, but not consistantly at all. \\
+
+By adding mutation, with 1 bit randomly inversion, at a probability of 10\%, the results doesn't change much. 
+If anything the results get even more inconsistent. That could be intuitiv given that the mutation can make
+the genotype both better and worse. 
+
+\insertplot{onemax-3}{Same parameters at \autoref{fig:onemax-2}, but with a mutation probability of 10\%}
+
+When deactivating the mutation, and trying different reproduction functions with different values, I could see
+that changing to two-point crossover, still with random slice, didn't change the result or the consistancy. But
+by changing the birth probability to 100\% I observed that the average max fitness in the later generations,
+was generally higher. This is observable in \autoref{fig:onemax-4}
+
+\insertplot{onemax-4}{Two-point crossover, no mutation, birthprobability of 100\%}
+
+By observing this, I started playing around with the birth probability and tried different reproduction functions.
+When the crossover function was set to uniform, without mutation and a birth probability of 90\% I finally found
+a consistent solution. For over 10 runs, the EA found a solution every time. An example run can be viewed in
+\autoref{fig:onemax-4}. 
+
+\insertplot{onemax-5}{Uniform crossover, no mutation, birthprobability of 90\%}
+
+Now by using these parameters I tried to reduse the population size. As I did, I tried to alter different 
+parameters with the different population sizes. Nothing really changed. The lowest population I could get
+a consistent solution on was the size of 200. I tried to introduce alteration in the genotypes by mutation
+on lower population to compansate for the reduce in potential parents to inherit from and introduce 
+potentially better genes, how ever with no real results. \\
+
+\textit{It could seem that there might be a bug in the EA, but after hours of debugging I still couldn't find anything
+that might be wrong. The only explonation I might have, is that the fitness-proportionate scaling might have to little
+pressure }

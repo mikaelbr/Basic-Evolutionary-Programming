@@ -6,16 +6,34 @@
 \usepackage{hyperref} % links in the document
 \usepackage{fullpage} % smaller margins
 \usepackage{float} % position of figures
+\usepackage{color}
 
-% Command for adding plots
-\newcommand{\myplot}[3][h!]{
-\begin{figure}[#1]
-    \begin{center}
-        \includegraphics[width=0.65\textwidth]{plots/#2}
-    \end{center}
-    \caption{#3}
-    \label{fig:#2}
-\end{figure}
+% Define path where the plots are stored
+% \def  \plotpath {../code/A/plots/}
+
+% Use a new command to wrap std functionality
+\newcommand{\insertplot}[3][H]{
+	\begin{figure}[#1]
+	    \begin{center}
+	        \includegraphics[width=0.7\textwidth]{../code/A/plots/#2}
+	    \end{center}
+	    \caption{#3}
+	    \label{fig:#2}
+	\end{figure}
+}
+
+% Configure different colors
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+% Set hyperlink settings
+\hypersetup{ 
+	colorlinks = true, 
+	linkcolor=darkblue, 
+	filecolor=darkgreen, 
+	urlcolor=darkred , 
+	citecolor=darkblue 
 }
 
 \title{Project 1.A: \\ Programming the Basics of an \\ Evolutionary Algorithm(EA)}
@@ -32,9 +50,15 @@
 
 \chapter{Deliverables}	
 \input{deliverables_a1}
+\newpage
 \input{deliverables_a2}
+\newpage
 \input{deliverables_a3}
+\newpage
 \input{deliverables_a4}
+\newpage
 \input{deliverables_a5}
+
+\listoffigures
 
 \end{document}

@@ -1,1 +1,39 @@
 \section{Target bit string as a random vector}
+I don't really expect much difference in result. There shouldn't be much different in trying to
+match a random bit string. The only problem I can think of is that the count of ones might be
+to high, and with no mutation there'll be no turning back. For children of strings with 
+mostly 1's, will still have mostly 1's if no mutation is present. \\
+
+I tried the problem with the same parameters as before, to be consistent and have comparable
+data. \\
+
+By observing the performance of both target bit string and all ones, they seem very similar for
+the set parameters. Both the target bit string (\autoref{fig:onemax-8}) and all ones (\autoref{fig:onemax-9})
+performed really well.
+
+
+\insertplot{onemax-8}{Targeted random bit string for matching instead of all ones.}
+
+
+\insertplot{onemax-9}{Regular One-Max Problem where fitness is the sum of phenotype vector.}
+
+To try to find difference in performance of the to, I changed up the parameters and had several testruns.
+I reduced the population size to 20, and reduced birth probability to 60\%, and set a mutation probability
+of 20\%. As it turns out, the one-max problem has an advantage over the random bit string. Often the 
+random bit string run would solution, but very inconsistantly. The one-max problem how ever, found a
+solution every run. See examples in \autoref{fig:onemax-10} and \autoref{fig:onemax-11}. This might be
+an coincidens, and that the one-max runs would have been inconsistent with more runs, but after 20 runs
+of each, it seemed pretty consistent. 
+
+
+\insertplot{onemax-8}{Targeted random bit string. Inconsistent solution. Run with population size 20, 
+generations 100, mutation at 20\% and reproduction at 60\%}
+
+
+\insertplot{onemax-9}{Regular One-Max Problem. Run with population size 20, generations 100, 
+mutation at 20\% and reproduction at 60\%}
+
+One would think that with higher mutation rate the random bit string matcher would atleast be as good
+as the one-max problem, but it seems as is that's not the case. How ever, with tweaks in the parameter
+the bit string solution would also be consistent. So conclusion is that there isn't much increase in 
+difficulty of the problem using a random bit string as target.

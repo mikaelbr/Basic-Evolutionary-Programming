@@ -213,7 +213,7 @@ class BlottoPlotter(Plotter):
         plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.12), ncol=3)
 
         #plt.show()
-        fig.savefig(self.find_filename(self.name + ".entropy"))
+        fig.savefig(self.find_filename(self.name + "-entropy"))
 
 # Fitness function
 def fitness_func(phenotype_value):

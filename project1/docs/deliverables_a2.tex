@@ -1,1 +1,17 @@
 \section{Justification of the code's modularity and reusability}
+
+As seen in the hyperref[sec:desccode]{description of the code}, the application uses the object oriented paradigm
+rather heavily. This makes for a very reusable and modular code. Using inheritance and polymorphism, makes the
+application simple to extend and override existing functionality. \\
+
+Some examples of how to implement solutions to different problems:
+\begin{itemize}
+
+\item \textbf{New phenotypes and genotypes}: For this one would only need to extend the Individual base class. Often, you only need to override the constructor, phenotype conversion method and child creation method. The constructor can initiate the representation value of the genotype if no value is given. For more fancy problems one could also override the fitness assesment method. For the population to have the correct set of arguments and class type, a closure function is passed to the population object. This closure function stores values, as gene size and fitness test, and passes them to the object initiator. So the closure function returns a function, which again returns a new object instance of the individual.
+
+\item \textbf{New genetic operators}: For genetic operators, as seen in the \hyperref[sec:repmut]{Reproduction and Mutation} section, are two different base classes, but fairly similar. Extend the respective base class and override the $do()$ method. For reproduction classes the $do()$ method takes two individuals as arguemtns, and the mutation classes only takes one. The mutation do() should alter the compositt object passed by referance in the argument, and the reproduction do() method should return two newly created children. For algorithm spesific values, such as the split in one point crossover, should be passed as constructor arguments. 
+
+\item \textbf{New selection mechanism}: To implement a new selection mechanism one should extend the SelectionMechanism base class. With inheritance, you get the $roulett_wheel()$ method, if needed. It's important to note the $probability\_func()$ method in the base class. This is a method that, if you should use roulette wheel, you should implement. It is used to calculate the amount of space the individual should take of the wheel. For agregated values such as total fitness, avarage fitness and so on, you could implement a $set\_values()$ method and run that in the overriden $do()$ method. This way you won't have to calculate the total or avarage each time you call the $probability\_func()$ method. The base class takes in the compositt population object as constructor argument. So you will always have access to all individuals. The roulette wheel automaticly alters the population. For methods that uses roulette wheel, you should return the resulting value of the roulette wheel method call. 
+
+\end{itemize}
+

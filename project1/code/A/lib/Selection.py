@@ -70,16 +70,19 @@ class SelectionMechanism(object):
             accumulated += self.probability_func(adult.fitness_value)
             wheel.append((adult, accumulated))
 
-        print "Wheel"
-        for adult, probability in wheel:
-            print "Value %s, fitness %s, prob %s" % (adult.value, adult.fitness_value, probability)
+        # print "Wheel"
+        # for adult, probability in wheel:
+        #     print "Value %s, fitness %s, prob %s" % (adult.value, adult.fitness_value, probability)
 
+        # GO through all indivituals and do an un-bias select. 
+        # Do so until the new adult population is filled up. 
         new_population = []
         while (len(new_population) < min([self.size, len(tmp_population)])):
             limit = random.uniform(0, accumulated);
+            # Find a 
             for adult, probability in wheel:
                 if probability > limit:
-                    new_population.append(adult)
+                    new_population.append(copy.deepcopy(adult))
                     break
         
         # print "New Population"
@@ -163,13 +166,24 @@ class HighestFitness(SelectionMechanism):
 
 class SelectionStrategy(object):
 
-    def __init__(self, size, protocol = GenerationalMixing, mechanism=None):
+    def __init__(self, size, protocol = GenerationalMixing, mechanism=None, elitism=None, truncation=None):
 
         self.size = size;
         self.protocol_name = protocol
         self.protocol = None
         self.mechanism_name = mechanism
         self.mechanism = None
+
+
+        # Elitism
+        self.elitism = elitism
+        if self.elitism is None:
+            self.elitism = 0
+
+        # Truncation
+        self.truncation = truncation
+        if self.truncation is None:
+            self.truncation = 0
         
     # IMPLEMENT ELITISM?
         
@@ -195,6 +209,25 @@ class SelectionStrategy(object):
             population.parents = []
             if self.mechanism is None:
                 self.mechanism = self.mechanism_name(self.size, population)
+
+            
+            # Elitism - Select a few to go directly to the next generation.
+            # Do not mutate or recombine.
+            new_population = population.parents[:]
+            new_population.sort(key=attrgetter('fitness_value'), reverse=True)
+            
+            if self.elitism > 0:
+                E = self.elitism
+                if E < 1: # a fraction
+                    E = int(len(new_population)*E)
+                population.children.extend(copy.deepcopy(new_population[:E]))
+                self.size -= E
+
+            # Truncation - Removal of parents as parents. 
+            population.parents.sort(key=attrgetter('fitness_value'), reverse=True)
+            if self.truncation > 0:
+                F = int(len(population.parents)*self.truncation)
+                del population.parents[-F:]
 
             # Do selection mechanism
             self.mechanism.do()

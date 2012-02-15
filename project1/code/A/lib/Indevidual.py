@@ -29,3 +29,9 @@ class Indevidual(object):
             self.fitness_value = self.fitness_func(self.phenotype)
 
         return self.fitness_value  
+
+    def toPhenotype(self):
+        pass
+
+    def create_child(self):
+        pass
