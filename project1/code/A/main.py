@@ -226,7 +226,7 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
-    output_size = int(args.pop_size * 0.1)
+    output_size = args.pop_size - int(args.pop_size * 0.1)
 
     print args
 

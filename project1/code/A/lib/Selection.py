@@ -166,14 +166,17 @@ class HighestFitness(SelectionMechanism):
 
 class SelectionStrategy(object):
 
-    def __init__(self, size, protocol = GenerationalMixing, mechanism=None, elitism=None, truncation=None):
+    def __init__(self, size, protocol = GenerationalMixing, mechanism=None, elitism=None, truncation=None, output_size = None):
 
         self.size = size;
         self.protocol_name = protocol
         self.protocol = None
         self.mechanism_name = mechanism
         self.mechanism = None
-
+        
+        self.output_size = output_size
+        if output_size is None:
+            self.output_size = self.size
 
         # Elitism
         self.elitism = elitism
@@ -192,7 +195,7 @@ class SelectionStrategy(object):
         # Check if we have protocol defined for the strategy
         if self.protocol_name is not None:
             if self.protocol is None:
-                self.protocol = self.protocol_name(self.size, population)
+                self.protocol = self.protocol_name(self.output_size, population)
 
             # Do selection protocol
             self.protocol.do()

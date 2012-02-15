@@ -51,21 +51,20 @@ class BattleStrategy(Indevidual):
         self.battles = battles
 
         if value is None:
-            value = self.generate_bits()
+            value = self.create_bits()
 
 
         self.fitness_value = None
         super(BattleStrategy, self).__init__(value, fitness_func)
-
-    def generate_bits (self):
-        def get_gene():
-            return '{:04b}'.format(int(random.randint(0,10)))
-        return ''.join(get_gene() for x in range(self.battles) )
-
+    
+    def create_bits(self):
+        weights = [int(random.randint(0,10)) for x in range(self.battles)]
+        return ''.join('{:04b}'.format(x) for x in weights)
+        
     def toPhenotype(self):
         weights = []
         for i in range(0, len(self.value), 4):
-            weights.append(int(self.value[i:i+3], 2));
+            weights.append(int(self.value[i:i+4], 2));
 
         # Need to check if the sum of weights equals zero
         if sum(weights) == 0:
@@ -111,6 +110,8 @@ class Colonels(Population):
         """
             Use this to battle between two different
             colnels. 
+
+            Note to self: Should refactor. Heavy and long algorithm
         """
         # Reset all fitness for surviving adults. In case of
         # overproduction or generational mixing
@@ -124,67 +125,59 @@ class Colonels(Population):
         battles = self.children[0].battles
         pop = self.children[:]
 
-        def do_battle(child1, child2):
-
-            # if child1.fitness_value is None:
-            #     child1.fitness_value = 0
-            
-            # if child2.fitness_value is None:
-            #     child2.fitness_value = 0
-
-            # Fight between children – Loop through battles
-            child1_victories = child2_victories = 0
-            reployment1 = reployment2 = 0.0
-            strength1 = strength2 = 1.0
-            
-            for battle in range(battles):
-                # List up resources for this battle. 
-                # Take reployment in account. 
-                resource1 = child1.phenotype[battle] + reployment1
-                resource2 = child2.phenotype[battle] + reployment2
-
-                if (resource1 * strength1) > (resource2 * strength2):
-                    # Child 1 won, Child 2 lost
-                    child1_victories += 1
-
-                    # Reduce Child2's strength
-                    strength2 -= self.strength_reduction
-
-                    # Reploy remaining forces
-                    if i < battles-1:
-                        # Distribute remaining forces evenly to other battles.
-                        # Reployment concatonates/accumelates.
-                        reployment1 += (self.reployment_fraction * (resource2-resource1))/(battles-i+1)
-
-                elif (resource1 * strength1) < (resource2 * strength2):
-                    # Child 2 won, CHild 1 lost
-                    child2_victories += 1
-
-                    # Reduce Child1's strength
-                    strength1 -= self.strength_reduction
-
-                    # Reploy remaining forces
-                    if i < battles-1:
-                        # Distribute remaining forces evenly to other battles.
-                        reployment2 += (self.reployment_fraction * (resource1-resource2))/(battles-i+1)
-
-            if child1_victories == child2_victories:
-                # Draw - both get 1 point
-                child1.fitness_value += BATTLE_POINT['TIE']
-                child2.fitness_value += BATTLE_POINT['TIE']
-            elif child1_victories > child2_victories:
-                # Child 1 won, Child 2 lost
-                child1.fitness_value += BATTLE_POINT['WIN']
-            else:
-                # Child 2 won, CHild 1 lost
-                child2.fitness_value += BATTLE_POINT['WIN']
-
 
         for i in range(len(pop)-1):
             for j in range(i+1, len(pop)):
                 # Will have the cross product of all 
                 # children
-                do_battle(pop[i], pop[j])
+                child1, child2 = pop[i], pop[j]
+
+                # Fight between children – Loop through battles
+                child1_victories = child2_victories = 0
+                reployment1 = reployment2 = 0.0
+                strength1 = strength2 = 1.0
+                
+                for battle in range(battles):
+                    # List up resources for this battle. 
+                    # Take reployment in account. 
+                    resource1 = child1.phenotype[battle] + reployment1
+                    resource2 = child2.phenotype[battle] + reployment2
+
+                    if (resource1 * strength1) > (resource2 * strength2):
+                        # Child 1 won, Child 2 lost
+                        child1_victories += 1
+
+                        # Reduce Child2's strength
+                        strength2 -= self.strength_reduction
+
+                        # Reploy remaining forces
+                        if i < battles-1:
+                            # Distribute remaining forces evenly to other battles.
+                            # Reployment concatonates/accumelates.
+                            reployment1 += (self.reployment_fraction * (resource2-resource1))/(battles-i+1)
+
+                    elif (resource1 * strength1) < (resource2 * strength2):
+                        # Child 2 won, CHild 1 lost
+                        child2_victories += 1
+
+                        # Reduce Child1's strength
+                        strength1 -= self.strength_reduction
+
+                        # Reploy remaining forces
+                        if i < battles-1:
+                            # Distribute remaining forces evenly to other battles.
+                            reployment2 += (self.reployment_fraction * (resource1-resource2))/(battles-i+1)
+
+                if child1_victories == child2_victories:
+                    # Draw - both get 1 point
+                    child1.fitness_value += BATTLE_POINT['TIE']
+                    child2.fitness_value += BATTLE_POINT['TIE']
+                elif child1_victories > child2_victories:
+                    # Child 1 won, Child 2 lost
+                    child1.fitness_value += BATTLE_POINT['WIN']
+                else:
+                    # Child 2 won, CHild 1 lost
+                    child2.fitness_value += BATTLE_POINT['WIN']
 
 
 
@@ -193,15 +186,27 @@ class BlottoPlotter(Plotter):
     def __init__(self, path = ".", name = "onemax"):
         super(BlottoPlotter, self).__init__(path, name)
         self.avg_entropy = []
+        self.winning_strategies = []
 
     def update (self, generation, population):
         super(BlottoPlotter, self).update(generation, population)
         if self.avg_entropy is None:
             self.avg_entropy = []
 
+        
+        winning_strategy = sorted(self.children, key=attrgetter('fitness_value'), reverse=True)
+        self.winning_strategies.append(winning_strategy[0])
+
         entropy = [i.entropy() for i in self.children]
 
         self.avg_entropy.append(sum(entropy) / float(len(self.children)))
+
+    def print_top(self):
+        i = 1
+        for strategy in self.winning_strategies:
+            print "#%i :: %s - Fitness %s" % (i, strategy.phenotype, strategy.fitness_value)
+            i += 1
+
 
     def plot_entropy(self):
         fig = plt.figure()
@@ -238,28 +243,54 @@ def create_binary_vector(battles):
 
     return inner_closure
 
+
+# Default values for all params. 
+std_values = {
+    'output_file': 'blotto',
+    'do_plot': True,
+    'pop_size':  20,
+    'mutation_probability': 0.04,
+    'birth_probability': 0.35,
+    'geno_size': 5, # Battles
+    'generations': 200,
+    'protocol': 'FullReplacement',
+    'mechanism': 'SigmaScaling',
+    'reproduction': 'BinaryUniformCrossover',
+    'elitism': 2,
+    'truncation': 0,
+    'reployment': 1.0,
+    'reduction': 1.0
+}
+
 if __name__ == "__main__":
 
     import argparse
-    # from IPython.config import loader
+    from IPython.config import loader
 
 
-    parser = argparse.ArgumentParser(version='0.1', description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = loader.ArgumentParser(version='0.1', description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument(
         '-o', 
         action="store", 
         dest="output_file",
         type=str, 
-        default="blotto",
+        default=std_values['output_file'],
         help='The threshold, if not optimized')
+
+    parser.add_argument(
+        '-noplot', 
+        dest="do_plot",
+        action="store_false", 
+        default=std_values['do_plot'],
+        help='A boolean value ')
 
     parser.add_argument(
         '-ps', 
         dest="pop_size",
         type=float,
         action="store", 
-        default=20,
+        default=std_values['pop_size'],
         help='Population size')
 
     parser.add_argument(
@@ -267,7 +298,7 @@ if __name__ == "__main__":
         action="store", 
         dest="mutation_probability",
         type=float, 
-        default=0.4,
+        default=std_values['mutation_probability'],
         help='Mutation probability')
 
     parser.add_argument(
@@ -275,57 +306,118 @@ if __name__ == "__main__":
         action="store", 
         dest="birth_probability",
         type=float, 
-        default=0.6,
+        default=std_values['birth_probability'],
         help='Birth probability')
+
+    parser.add_argument(
+        '-e', 
+        action="store", 
+        dest="elitism",
+        type=float, 
+        default=std_values['elitism'],
+        help='Elitism ( e < 1 means fraction ). ')
+
+    parser.add_argument(
+        '-t', 
+        action="store", 
+        dest="truncation",
+        type=float, 
+        default=std_values['truncation'],
+        help='truncation - a fraction ')
 
     parser.add_argument(
         '-s', 
         action="store", 
         dest="geno_size",
         type=int,
-        default=10,
-        help='Number of battles.')
+        default=std_values['geno_size'],
+        help='Geno size. Number of bits.')
 
     parser.add_argument(
         '-g', 
         action="store", 
         dest="generations",
         type=int,
-        default=400,
+        default=std_values['generations'],
         help='Number of generations')
+
+    parser.add_argument(
+        '-protocol', 
+        action="store", 
+        dest="protocol",
+        type=str, 
+        default=std_values['protocol'],
+        help='The protocol for using adult selection')
+
+    parser.add_argument(
+        '-mechanism', 
+        action="store", 
+        dest="mechanism",
+        type=str, 
+        default=std_values['mechanism'],
+        help='The mechanism for using parent selection')
+
+    parser.add_argument(
+        '-reproduction', 
+        action="store", 
+        dest="reproduction",
+        type=str, 
+        default=std_values['reproduction'],
+        help='The reproduction method')
+
+    parser.add_argument(
+        '-reployment', 
+        action="store", 
+        dest="reployment",
+        type=float, 
+        default=std_values['reployment'],
+        help='Reployment factor ')
+
+    parser.add_argument(
+        '-reduction', 
+        action="store", 
+        dest="reduction",
+        type=float, 
+        default=std_values['reduction'],
+        help='Reduction factor ')
+    
+
+    import sys
+    import types
+    
+    def str_to_class(field):
+        try:
+            identifier = getattr(sys.modules[__name__], field)
+        except AttributeError:
+            raise NameError("%s doesn't exist." % field)
+        if isinstance(identifier, (types.ClassType, types.TypeType)):
+            return identifier
+        raise TypeError("%s is not a class." % field)
 
 
     args = parser.parse_args()
-
-    pop_size = args.pop_size
-    generations = args.generations
-    output_size = 15 # int(pop_size - (pop_size/5))
-    birth_probability = args.birth_probability
-    mutation_probability = args.mutation_probability
-    battles = args.geno_size
-    output_file = args.output_file
+    output_size = args.pop_size - int(args.pop_size * 0.1)
 
     print args
 
-    population = Colonels(pop_size, create_binary_vector(battles))
+    population = Colonels(args.pop_size, create_binary_vector(args.geno_size), args.reployment, args.reduction)
 
-    adult_selection = SelectionStrategy(output_size, GenerationalMixing)
-    parent_selection = SelectionStrategy(pop_size, None, SigmaScaling)
+    adult_selection = SelectionStrategy(args.pop_size, str_to_class(args.protocol), output_size=output_size)
+    parent_selection = SelectionStrategy(args.pop_size, None, str_to_class(args.mechanism), args.elitism, args.truncation)
 
-    reproduction = BinaryTwoPointCrossover(birth_probability) # Birth probability
-    mutation = RandomChangeValue(mutation_probability) # Mutation probability
+    reproduction = str_to_class(args.reproduction)(args.birth_probability) # , 0.3) # Birth probability
+    mutation = RandomChangeValue(args.mutation_probability) # Mutation probability
 
-    if output_file is not None:
-        plotter = BlottoPlotter("./plots", output_file)
+    if args.output_file is not None and args.do_plot is True:
+        plotter = BlottoPlotter("./plots", args.output_file)
     else:
         plotter = None
 
-    ea = EA(population, adult_selection, parent_selection, reproduction, mutation, generations, plotter)
+    ea = EA(population, adult_selection, parent_selection, reproduction, mutation, args.generations, plotter)
     ea.loop()
-
-
 
     if plotter is not None:
         plotter.plot()
         plotter.plot_entropy()
+        plotter.print_top()
 
