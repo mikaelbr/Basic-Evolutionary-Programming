@@ -5,8 +5,8 @@
 \contentsline {figure}{\numberline {2.2}{\ignorespaces EA with no genetic functions. Population size 200 and 100 generations}}{8}{figure.2.2}
 \contentsline {figure}{\numberline {2.3}{\ignorespaces Run with pop size 200 and one-pit reproduction prob. at 50\%. Splice at random}}{9}{figure.2.3}
 \contentsline {figure}{\numberline {2.4}{\ignorespaces Same parameters at \autoref {fig:onemax-2}, but with a mutation probability of 10\%}}{9}{figure.2.4}
-\contentsline {figure}{\numberline {2.5}{\ignorespaces Two-point crossover, no mutation, birthprobability of 100\%}}{10}{figure.2.5}
-\contentsline {figure}{\numberline {2.6}{\ignorespaces Uniform crossover, no mutation, birthprobability of 90\%}}{11}{figure.2.6}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Two-point crossover, no mutation, birth probability of 100\%}}{10}{figure.2.5}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Uniform crossover, no mutation, birth probability of 90\%}}{11}{figure.2.6}
 \contentsline {figure}{\numberline {2.7}{\ignorespaces Population 200, Generations 100. With Sigma Scaling as selection mechanism. Highly increased performance from fitness-proportionate.}}{12}{figure.2.7}
 \contentsline {figure}{\numberline {2.8}{\ignorespaces Population 200, Generations 100. With Tournament as selection mechanism. Highly increased performance from fitness-proportionate.}}{13}{figure.2.8}
 \contentsline {figure}{\numberline {2.9}{\ignorespaces Targeted random bit string for matching instead of all ones.}}{14}{figure.2.9}
