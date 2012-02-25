@@ -51,15 +51,19 @@ class EA:
         if self.reproduction is None:
             return
 
-        parents = self.population.parents
-        for i in range(0, len(parents)-1, 2):
-            child1, child2 = parents[i], parents[i+1]
+        parents = self.population.parents[:]
+        for i in range(0, len(parents)-1):
+            if i % 2 == 1:
+                child1, child2 = parents[i-1], parents[i]
 
-            if self.reproduction.birth_probability > random.random():
-                child1, child2 = self.reproduction.do(child1, child2)
+                if self.reproduction.birth_probability > random.random():
+                    # print "Parents: \n %s \n %s" % (child1.value, child2.value)
+                    child1, child2 = self.reproduction.do(child1, child2)
+                    # print "Kids: \n %s \n %s" % (child1.value, child2.value)
 
-            self.population.children.append(copy.deepcopy(child1))
-            self.population.children.append(copy.deepcopy(child2))
+
+                self.population.children.append(copy.deepcopy(child1))
+                self.population.children.append(copy.deepcopy(child2))
 
 
     def mutate(self):
@@ -96,7 +100,12 @@ class EA:
 
                 if fitness is None:
                     fitness = 0
-                print "Value %s, fitness: %s" % (item.value, fitness)
+
+                # Collect all denary values from genotype, categorized by 5 bits interval
+                params = [int(item.value[i:i+item.gene_size], 2) for i in range(0, len(item.value), item.gene_size)]
+                # Need to encode values to fit to given ranges/intervals
+                a, b, c, d, k = item.fit_range (params)
+                print "Value %s, %s, %s, %s, %s, fitness: %s" % (a, b, c, d, k, fitness)
 
             # Adult selection
             self.adult_select()

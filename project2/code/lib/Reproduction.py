@@ -23,13 +23,14 @@ class BinaryUniformCrossover(Reproduction):
         """
         child1 = []
         child2 = []
-        for i in range(len(g1.value)):
+
+        for i in range(0, len(g1.value), g1.gene_size):
             if random.random() > self.probability:
-                child1.append(g1.value[i])
-                child2.append(g2.value[i])
+                child1.append(g1.value[i:i+g1.gene_size])
+                child2.append(g2.value[i:i+g1.gene_size])
             else:
-                child1.append(g2.value[i])
-                child2.append(g1.value[i])
+                child1.append(g2.value[i:i+g1.gene_size])
+                child2.append(g1.value[i:i+g1.gene_size])
 
         
         return g1.create_child(''.join(child1)), g2.create_child(''.join(child2))
@@ -48,7 +49,8 @@ class BinaryOnePointCrossover(Reproduction):
         """
         split_in = self.split
         if split_in is None:
-            split_in = random.randint(1, len(g1.value)-1)           
+            # split_in = random.randint(1, len(g1.value)-1)     
+            split_in = random.randint(0, 5-1) * g1.gene_size      
         
         child1 = g1.create_child(g1.value[:split_in] + g2.value[split_in:])
         child2 = g2.create_child(g2.value[:split_in] + g1.value[split_in:])
@@ -68,10 +70,10 @@ class BinaryTwoPointCrossover(Reproduction):
         """
         split_in1, split_in2 = self.split1, self.split2
         if split_in1 is None:
-            split_in1 = random.randint(1, len(g1.value)-1)
+            split_in1 = random.randint(0, 5-1) * g1.gene_size 
         
         if split_in2 is None:
-            split_in2 = random.randint(1, len(g2.value)-1)
+            split_in2 = random.randint(0, 5-1) * g1.gene_size 
         
         if split_in1 > split_in2:
             # Switch up

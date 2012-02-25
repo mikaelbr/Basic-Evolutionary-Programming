@@ -132,14 +132,14 @@ class Tournament(SelectionMechanism):
     def probability_func (self, fitness):
         pass
 
-    def do(self, k=2, e=0.7):
+    def do(self, k=2, e=0.8):
         tmp_population = self.population.adults[:]
 
         new_population = []
         while (len(new_population) < min([self.size, len(tmp_population)])):
             adults = random.sample(tmp_population, k)
             adults.sort(key=attrgetter('fitness_value'), reverse=True)
-            new_population.append(adults[int(random.random() > e)])
+            new_population.append(copy.deepcopy(adults[int(random.random() > e)]))
         
         self.population.parents = new_population[:]
         return self.population.parents

@@ -20,17 +20,20 @@ param_range = {
     'k': [0.01, 1.0]
 }
 
-# REWRITE :D
-def _read_spike_files():
-    """Read the spike files and return a dict with spikes data."""
-    def spike(path):
+def get_target_data():
+
+    def read_file(path):
         with open(path, 'r') as f:
             return [float(i) for i in f.readline().strip().split(' ')]
-    return [spike('data/izzy-train1.dat'), spike('data/izzy-train2.dat'), 
-            spike('data/izzy-train3.dat'), spike('data/izzy-train4.dat')]
 
 
-#REWRITE
+    return [
+        read_file('data/izzy-train1.dat'), 
+        read_file('data/izzy-train2.dat'), 
+        read_file('data/izzy-train3.dat'), 
+        read_file('data/izzy-train4.dat')
+        ]
+
 
 class SpikingNeuron(Indevidual):
 
@@ -202,10 +205,12 @@ class SDM(object):
 
         # Implement A Spike-Count Difference Penalty
         if penalty:
-            #tmp += SDM.difference_penalty(spikes1, spikes2, train1)
-            tmp += (abs(len(spikes2) - len(spikes1)) * len(train1)) / (2*N)
+            tmp += SDM.difference_penalty(spikes1, spikes2, train1)
 
         distance = math.sqrt(tmp) / N
+        #print distance
+        #print "Target: %s \n Spikes1: %s " % (spikes2, spikes1)
+        # print "Target Train (%s): %s \n Train1 (%s): %s " % (len(train2), train2, len(train1), train1)
         return 1.0/distance
 
 
@@ -222,6 +227,10 @@ class SDM(object):
         spikes1, spikes2 = SDM.compute_spike_times(train1), SDM.compute_spike_times(train2)
 
         N = min(len(spikes1), len(spikes2))
+
+
+        if N < 2:
+            return 0
 
         tmp = sum(pow(abs((spikes2[i] - spikes2[i-1]) - (spikes1[i] - spikes1[i-1])), p) for i in range(1, N))
 
@@ -264,9 +273,12 @@ class SpikeMutation(Mutation):
      def do(self, g1): # REWRITE!!!
         """Randomly mutate a gene in the genotype."""
         s = random.randint(0, std_values['num_params']-1) * g1.gene_size
+        #print "Mutation s %s" % s
 
         binary_helper = '{:0'+str(g1.gene_size)+'b}'
         new_gene = binary_helper.format(random.randint(0, g1.max_value))
+
+        #print "New Gene %s " % new_gene
         g1.value = (g1.value[:s] + new_gene + g1.value[s+g1.gene_size:])
 
 
@@ -323,18 +335,18 @@ class SpikingNeuronPlotter(Plotter):
 std_values = {
     'output_file': 'spiking',
     'do_plot': True,
-    'pop_size':  100,
-    'mutation_probability': 0.2,
+    'pop_size':  200,
+    'mutation_probability': 0.3,
     'birth_probability': 1.0,
-    'gene_size': 5, # The bit size for each gene (parameter)
+    'gene_size': 7, # The bit size for each gene (parameter)
     'generations': 200,
     'protocol': 'FullReplacement',
     'mechanism': 'Tournament',
     'reproduction': 'BinaryOnePointCrossover',
     'elitism': 0.04,
     'truncation': 0.05,
-    'tau': 10,
-    'I': 10,
+    'tau': 10.0,
+    'I': 10.0,
     'timesteps': 1000,
     'spike_threshold': 35, # mV (milli Volts)
     'num_params': 5, # The number of parameters: a, b, c, d, k
@@ -468,13 +480,13 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
-    output_size = args.pop_size - int(args.pop_size * 0.1)
+    output_size = args.pop_size # - int(args.pop_size * 0.05)
 
     print args
 
 
-    target_spikes = _read_spike_files()
-    target = target_spikes[0];
+    target_spikes = get_target_data()
+    target = target_spikes[1];
 
     create_objects = create_data(args.gene_size, args.metric_fn, target)
     population = Population(args.pop_size, create_objects)
