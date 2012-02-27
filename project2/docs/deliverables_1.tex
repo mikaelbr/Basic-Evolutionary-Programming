@@ -1,0 +1,119 @@
+\section{Description of the system}
+\label{sec:descsys}
+
+This project is based on the previously developed EA from project 1 A and B. Except for some minor changes 
+to the genetic functions (see section \hyperref[sec:geneticchanges]{Minor changes}), the code is identical.
+
+As the system is highly object oriented, all the alterations and implementations spesific to any problem,
+is extended as sub classes of the main "framework" given by the EA library. 
+
+In this section, an explanation of all the different sub classes can be found, description of the genotype
+representation and fitness function. 
+
+\subsection{Extensions to the original code}
+\label{sec:extensions}
+
+There are three extending classes that overwrites/extends standard behaviour; The individual,
+mutation and the plotting. In addition there is a new class for calculating the spike distance, with 
+three different methods.
+
+\subsubsection{Indevidual: SpikingNeuron}
+
+This is where most of the magic happens. This class takes care of creating new genotype values (if not set),
+and converting from genotype to phenotype. 
+
+The constructor takes the gene size as an argument. This sets the number of bits each gene should have. 
+(See \hyperref[sec:genotype]{Genotype representation}). This is used to create a bit string genotype of the size 
+$gene size * number of params$. 
+
+In addition to creating the random value the class also have a method for converting from genotype
+to phenotype, and a helper method for making each of the parameters fit inside of their given range 
+(\autoref{sec:genotype}). 
+
+The to phenotype function handles the calculations regarding the Izhikevich Spiking-Neuron Model. 
+
+\subsubsection{Mutation: SpikeMutation}
+The mutation simply injects changes to the genotype by removing one random gene and replacing it
+with a new random generated one. 
+
+\subsubsection{Plotter: SpikingNeuronPlotter}
+Added methods for plotting out the activation levels. 
+
+
+\subsubsection{SDMs: Spike Train Distance Metrics}
+\label{sec:sdm}
+A new class for handling calculations of the spike distance. Methods are 
+
+\begin{enumerate}
+	\item Spike Time Distance Metric
+	\item Spike Interval Distance Metric
+	\item Waveform Distance Metric
+\end{enumerate}
+
+These methods are used to calculate the inverted distance between two trains. The result of these
+methods are used as fitness. That means that the larger the distance is, the lower the result should be.
+Thats why the results are inverted by taking $1/distance$. This way a huge distance will become a very
+low fitness value, and vice versa.  \\
+
+In the SDM class, there's also a helper method named $compute\_spike\_times()$. This method
+takes a train as the argument, and iterates over the train in a window of size 5. The results
+are a generated list of the spike times in the train. 
+
+\subsubsection{Helper functions and the main execution file}
+
+The main executon file handles all the interaction between the command line and the application. As
+with the previous project, all values can be changed through flags passed as arguments in the command
+line. Full overview of which flags are availeble, can be found bu running the main file, and attaching the $-h$ flag. 
+
+A helper function is created to read the data set. This method takes a number between 1 and 4, as argument and 
+returns the data train set according to the argument number.
+
+\subsubsection{Minor changes}
+\label{sec:geneticchanges}
+
+The crossover functions needed a fix, as they didn't take consideration for a genotype with genes larger
+then one bit. So the genes would be splitted up, and that destroyd the evolving. 
+
+
+\subsection{Genotype representation}
+\label{sec:genotype}
+
+The genotype is represented as a bit string, as that what I first though of, and read out of the assignment 
+diagram, also I have the genetic functions to use on binary values. I'd say it is a real-valued representation. 
+Where there are 5 genes representing the parameters used by the model, and each of these genes are 
+represented as binary strings.  \\ 
+
+When the model is to run, all the parameters are fitted to match the range for each of the parameters, according
+to the ranges defined in the project description. 
+
+\begin{enumerate}
+
+	\item $a  \in  [0.001, 0.2] $
+	\item $b  \in  [0.01, 0.3] $
+	\item $c  \in  [-80, -30] $
+	\item $d  \in  [0.1,10] $
+	\item $k  \in  [0.01, 1.0] $
+
+\end{enumerate}
+ 
+ The first gene is parameter a, the second is b, and so on. 
+ 
+
+\subsection{Fitness function}
+
+As described in \autoref{sec:sdm}, the fitness is calculated by using the distance metric, and inverting it. 
+The distance metrics, each work in different ways.
+
+\begin{enumerate}
+
+	\item \textbf{Spike Time Distance Metric}: Takes in the two trains, converts both to spike times, sum up the 
+	total difference between corresponding spike times. 
+	
+	\item \textbf{Spike Interval Distance Metric}: Also converts both trains to spike times. With the spike times, 
+	it calculates the difference in the length of the time intervals between corresponding spike times. 
+	
+	\item \textbf{Waveform Distance Metric}: Does not use the spike times. Simply calculates the sum of the 
+	differences in the spikes. 
+	
+\end{enumerate}
+

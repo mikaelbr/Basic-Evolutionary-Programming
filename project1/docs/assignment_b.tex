@@ -1,0 +1,20 @@
+\section{About the project}
+The purpose of this project is to gain experience with genetic algorithms and coevolution. 
+
+The EA framework developed in previous project (Part A), will be used to solve a problem in coevolution.
+The problem that will be solved is a war game, Colonel Blotto, which includes a set of individuals, Colonels,
+compeating with each other.
+
+
+\section{The Colonel Blotto Problem}
+
+The problem is for finding the best of resource (soldiers S) distribution across a number of battles, B. There are 
+a fixed number of battles, and the winner of most battles in a war wins the war. A Colonels distributes 
+all resources before a war.
+
+As a added twist, there can be reployment of left over resources in a battle. The remaining resources gets divided
+evenly across the remaining battles. The reployment is moderated by a fraction $R_{f}$.
+
+A strength reduction is also added to the problem. A strength reduction will reduce resources in each battle, if
+a previous battle is lost. This strength reduction will aggregate through out the battles. Each war begins with 
+strength 1.0 but is decreased by a fraction $L_{f}$ each time a battle is lost.

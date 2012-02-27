@@ -1,0 +1,92 @@
+\documentclass[a4paper, 11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx} % support graphics
+\usepackage{hyperref} % links in the document
+\usepackage{fullpage} % smaller margins
+\usepackage{float} % position of figures
+\usepackage{color}
+
+
+\usepackage{listings}
+ 
+ 
+% Configure different colors
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+ 
+\lstset{ %
+  language=Python,                % the language of the code
+  basicstyle=\footnotesize,           % the size of the fonts that are used for the code
+  numbers=left,                   % where to put the line-numbers
+  backgroundcolor=\color{white},      % choose the background color. You must add \usepackage{color}
+  frame=single,                   % adds a frame around the code
+  rulecolor=\color{black},        % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. commens (green here))
+  tabsize=2,                      % sets default tabsize to 2 spaces
+  captionpos=b,                   % sets the caption-position to bottom
+  title=\lstname,                   % show the filename of files included with \lstinputlisting;
+                                  % also try caption instead of title
+  keywordstyle=\color{blue},          % keyword style
+  commentstyle=\color{dkgreen},       % comment style
+  stringstyle=\color{mauve},         % string literal style
+  escapeinside={*)},            % if you want to add a comment within your code
+  morekeywords={*,...}               % if you want to add more keywords to the set
+}
+
+
+% Define path where the plots are stored
+% \def  \plotpath {../code/A/plots/}
+
+% Use a new command to wrap std functionality
+\newcommand{\insertplot}[3][H]{
+	\begin{figure}[#1]
+	    \begin{center}
+	        \includegraphics[width=0.7\textwidth]{../code/A/plots/#2}
+	    \end{center}
+	    \caption{#3}
+	    \label{fig:#2}
+	\end{figure}
+}
+
+
+% Set hyperlink settings
+\hypersetup{ 
+	colorlinks = true, 
+	linkcolor=darkblue, 
+	filecolor=darkgreen, 
+	urlcolor=darkred , 
+	citecolor=darkblue 
+}
+
+\title{Project 2: \\ Evolving Spiking-Neuron Parameters}
+\author{Mikael Brevik}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+
+\chapter{Introduction}
+\input{assignment}
+
+\chapter{Deliverables}	
+\input{deliverables_1}
+\newpage
+\input{deliverables_2}
+\newpage
+\input{deliverables_3}
+
+\input{deliverables_4}
+
+\input{deliverables_5}
+
+\listoffigures
+
+\end{document}

@@ -1,0 +1,26 @@
+\section{Settings of key parameters}
+
+\begin{center}
+    \begin{table}[H]
+        \begin{tabular}{l l}
+            Population size & 20 \\
+            Mutation probability & 0.04 \\
+            Mutation function & Change random weight \\
+            Birth probability (Crossover) & 0.35 \\
+            Crossover type & Uniform \\
+            Generations & 200 \\
+            Adult selection & FullReplacement \\
+            Parent selection & SigmaScaling \\
+            Elitism & 2 \\
+            Truncation & 0 \\
+        \end{tabular}
+        \caption{The default values of the key EA parameters}
+        \label{tab:defaultparams}
+    \end{table}
+\end{center}
+
+The result of running the application with the defaults value can be viewed at \autoref{fig:blotto-entropy-1} and \autoref{fig:blotto-1}
+
+\insertplot{blotto-entropy-1}{Showing average entropy for run with default EA parameter values as given by \autoref{tab:defaultparams}}
+
+\insertplot{blotto-1}{Showing fitness for run with default EA parameter values as given by \autoref{tab:defaultparams}}

@@ -1,0 +1,90 @@
+\section{Test Cases}
+
+Below the standard settings for all test cases can be seen. The system is runnning
+with full generational replacement as adult selection, and Tournament mechanism for
+parent selection.
+
+For crossover and mutation, One-Point crossover and random value change of a gene is used. 
+
+\begin{lstlisting}[frame=single,caption={Default values for all params}] 
+std_values = {
+    'output_file': 'spiking',
+    'do_plot': True,
+    'pop_size':  100,
+    'mutation_probability': 0.25,
+    'birth_probability': 1.0,
+    'gene_size': 7, # The bit size for each gene (parameter)
+    'generations': 200,
+    'protocol': 'FullReplacement',
+    'mechanism': 'Tournament',
+    'reproduction': 'BinaryOnePointCrossover',
+    'elitism': 0.04,
+    'truncation': 0.05,
+    'tau': 10.0,
+    'I': 10.0,
+    'timesteps': 1000,
+    'spike_threshold': 35 # mV (milli Volts)
+}
+\end{lstlisting}
+
+\subsection{Spike Time Distance Metric}
+
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{ | l | c | c | c | c | c | l |}
+	
+	    \hline
+	    
+	  	\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots} \\ \hline
+	  	\textbf{Spike-Train \#}1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#2} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#3} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#4} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\  \hline
+	  	
+	    \end{tabular}
+	
+	\end{center}
+    \caption{Test cases for Spike Time Distance Metric}
+\end{table}
+
+
+\subsection{Spike Interval Distance Metric}
+
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{ | l | c | c | c | c | c | l |}
+	
+	    \hline
+	    
+	  	\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots} \\ \hline
+	  	\textbf{Spike-Train \#}1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#2} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#3} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#4} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\  \hline
+	  	
+	    \end{tabular}
+	
+	\end{center}
+    \caption{Test cases for Spike Interval Distance Metric}
+\end{table}
+
+
+\subsection{Waveform Distance Metric}
+
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{ | l | c | c | c | c | c | l |}
+	
+	    \hline
+	    
+	  	\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots} \\ \hline
+	  	\textbf{Spike-Train \#}1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#2} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#3} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
+	  	\textbf{Spike-Train \#4} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\  \hline
+	  	
+	    \end{tabular}
+	
+	\end{center}
+    \caption{Test cases for Waveform Distance Metric}
+\end{table}

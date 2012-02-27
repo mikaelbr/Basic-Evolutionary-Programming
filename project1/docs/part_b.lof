@@ -1,0 +1,11 @@
+\select@language {english}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Showing average entropy for run with default EA parameter values as given by \autoref {tab:defaultparams}}}{5}{figure.2.1}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Showing fitness for run with default EA parameter values as given by \autoref {tab:defaultparams}}}{6}{figure.2.2}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Fitness plot with B = 5, $R_f$ = 1.0 and $L_f$ = 0.4}}{8}{figure.2.3}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Average entropy plot with B = 5, $R_f$ = 1.0 and $L_f$ = 0.4}}{9}{figure.2.4}
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Fitness plot with B = 10, $R_f$ = 0.0 and $L_f$ = 1.0}}{10}{figure.2.5}
+\contentsline {figure}{\numberline {2.6}{\ignorespaces Average entropy plot with B = 10, $R_f$ = 0.0 and $L_f$ = 1.0}}{10}{figure.2.6}
+\contentsline {figure}{\numberline {2.7}{\ignorespaces Fitness plot with B = 20, $R_f$ = 0.3 and $L_f$ = 1.0}}{11}{figure.2.7}
+\contentsline {figure}{\numberline {2.8}{\ignorespaces Average entropy plot with B = 20, $R_f$ = 0.3 and $L_f$ = 1.0}}{11}{figure.2.8}

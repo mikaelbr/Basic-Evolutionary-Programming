@@ -1,0 +1,19 @@
+\section{Significance of strategy entropy}
+
+The strategy entropy is defined by the following formula:
+
+\begin{center}
+$H(s) = -\sum_{i = 1}^{B} p_{i} \log_{2}(p_{i})$
+\end{center}
+
+In the formula, $p_{i}$ is the fraction of the total resource that is devoted to the $i$th battle.
+This is the same as the $i$th index of the phenotype. \\
+
+Let's analyze the formula. If the normalized weight is very small or very high, the entropy will get close
+to 0. This is due to the $\log_{2}()$. So this means that the strategy isn't a generic "trying to cover it all"
+strategy, but rather favors certain battles. This sounds more like a strategy. 
+
+Let's say that the game uses both the troop redistribution and strength reduction. With those two aspects,
+the smartest move is to start hard in the first battle and therefor get an advantage in the following battles
+with redistribution of the troops and full strength. The entropy says that when it is close to zero, there are
+big differences in the $p_i$ therefor more likely to be a good strategy. 

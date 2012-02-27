@@ -1,0 +1,35 @@
+\section{Plotted data}
+
+I have chosen to look more in depth at run 7, 13 and 22.
+
+\subsection{Fitness and entropy run 7}
+\insertplot{blotto-2}{Fitness plot with B = 5, $R_f$ = 1.0 and $L_f$ = 0.4}
+\insertplot{blotto-entropy-2}{Average entropy plot with B = 5, $R_f$ = 1.0 and $L_f$ = 0.4}
+
+It is clear that with $R_f$ = 1.0 and $L_f$ = 0.4, the strategy is to focus the forces in one 
+battle. As the avg entropy in \autoref{blotto-entropy-3} starts high, and gets reduced as generations go.
+There was a climb in the entropy in the final 50 generations with this run. There was some competition 
+around the generations 150-160. It might be that due to the $R_f$, after winning multiple battles
+it tried to move some of the "redundant" forces from the first battle to win more battles.
+
+\subsection{Fitness and entropy run 13}
+\insertplot{blotto-3}{Fitness plot with B = 10, $R_f$ = 0.0 and $L_f$ = 1.0}
+\insertplot{blotto-entropy-3}{Average entropy plot with B = 10, $R_f$ = 0.0 and $L_f$ = 1.0}
+
+In this example we can clearly see the effects of high $L_f$. The $L_f$ will make it so that if
+you lose the first battle, you will take a massive hit for the next battles. So the best strategy
+was to move the forces to the first battle. As we can see from the avg entropy and fitness plot,
+all the Colonels had to do the same. In the final generations the highest and average fitness
+were equivelent. 
+
+\subsection{Fitness and entropy run 22}
+\insertplot{blotto-4}{Fitness plot with B = 20, $R_f$ = 0.3 and $L_f$ = 1.0}
+\insertplot{blotto-entropy-4}{Average entropy plot with B = 20, $R_f$ = 0.3 and $L_f$ = 1.0}
+
+There was a competition between two strong strategies. With the settings of $R_f$ and $L_f$, the
+was to have the main focus on the first battle, but also distribute some of the forces out to the remanding
+battles. \\
+
+One strategy has 10\% more of the forces in the first battle. This had it's advantages, since the last 5-6 generations,
+this strategy was the best. As the weaker strategy lost against the dominant in the first round, he took major hits
+from the strength reduction.

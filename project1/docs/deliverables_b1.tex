@@ -1,0 +1,18 @@
+\section{Description of representation}
+
+Since the genome should have B binary genes with a random integer between 0 and 10, we know that 
+the total size of the binary string should be $B*4$. This is due to the span of the random values all
+can be represented in 4-bit. 
+
+For representing a phenotype we need to find out the original 10-based value for the gene and then
+normalize it. So in the $toPhenotype()$ method will loop through the genotype string with an increment
+of 4 and convert each gene to a denary value. After the weight is found again we can normalize these
+values by dividing all by the sum of the weights. If the sum of the weights equals zero (I.e no forces
+in battle), the resources get automatically distributed to all battles. \\
+
+Example: If we have a two battle war, and the random integers selected are 7 and 4, we convert those to 
+binary values: 0111 and 0100. These binary values get concatenated to 01110100. This is our genotype.
+
+To convert this to a phenotype we need to convert from binary to denary again and yet again we have 7 
+and 4. Now we normalize these values. 7/11 and 4/11: 0.6364 and 0.3636. The vector of these values
+([0.6364, 0.3636]) is our phenotype.

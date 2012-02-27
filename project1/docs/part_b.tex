@@ -1,0 +1,66 @@
+\documentclass[a4paper, 11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{graphicx} % support graphics
+\usepackage{hyperref} % links in the document
+\usepackage{fullpage} % smaller margins
+\usepackage{float} % position of figures
+\usepackage{color}
+\usepackage{tabularx}
+
+% Define path where the plots are stored
+% \def  \plotpath {../code/A/plots/}
+
+% Use a new command to wrap std functionality
+\newcommand{\insertplot}[3][H]{
+	\begin{figure}[#1]
+	    \begin{center}
+	        \includegraphics[width=0.7\textwidth]{../code/A/plots/#2}
+	    \end{center}
+	    \caption{#3}
+	    \label{fig:#2}
+	\end{figure}
+}
+
+% Configure different colors
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+% Set hyperlink settings
+\hypersetup{ 
+	colorlinks = true, 
+	linkcolor=darkblue, 
+	filecolor=darkgreen, 
+	urlcolor=darkred , 
+	citecolor=darkblue 
+}
+
+\title{Project 1.B: \\ Evolving Colonel Blotto Strategies using a Genetic Algorithm)}
+\author{Mikael Brevik}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+\chapter{Introduction}
+\input{assignment_b}
+
+\chapter{Deliverables}	
+\input{deliverables_b1}
+\newpage
+\input{deliverables_b2}
+\newpage
+\input{deliverables_b3}
+\newpage
+\input{deliverables_b4}
+\input{deliverables_b5}
+\newpage
+\input{deliverables_b6}
+
+\listoffigures
+
+\end{document}

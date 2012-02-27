@@ -1,0 +1,83 @@
+\section{Summarizing base runs}
+
+\begin{center}
+\begin{table}[H]
+\begin{tabularx}{\textwidth}{ | c | c | c | c | X | }
+    \hline Run & B & \( R_f \) & \( L_f \) & Description \\ \hline
+    1 & 5 & 0.0 & 0.0 & 
+    Convergence to one stable strategy [0.25, 0.75, 0.0, 0.0, 0.0]. Best 90 times of the last 91 generations.
+    \\ \hline
+    2 & 5 & 0.3 & 0.0 & 
+    Convergence to one stable strategy [0.0, 0.1538, 0.0, 0.0, 0.8461]. Best the 17 last generations.
+    \\ \hline
+    3 & 5 & 1.0 & 0.0 &
+    Continuous shifting between strategies where the second first and two last battles looks most important.
+    \\ \hline
+    4 & 5 & 0.0 & 0.4 &
+    One strategy won the last 10 wars. Focus on the first battles. 
+    \\ \hline
+    5 & 5 & 0.0 & 1.0 &
+    Strong convergence to the strategy [1.0, 0.0, 0.0, 0.0, 0.0]. Won the last 140 generations.
+    \\ \hline
+    6 & 5 & 0.3 & 0.4 &
+    Convergence to [0.625, 0.125, 0.0, 0.0, 0.25] (with small alterations).
+    \\ \hline
+    7 & 5 & 1.0 & 0.4 &
+    Converges to [0.8461, 0.0769, 0.0, 0.0769, 0.0]. Heavy on the first $p_i$.
+    \\ \hline
+    8 & 5 & 1.0 & 1.0 &
+    Strong convergence to the strategy [1.0, 0.0, 0.0, 0.0, 0.0]. Best the last 150 generations.
+    \\ \hline
+    9 & 10 & 0.0 & 0.0 & 
+    Convergence to one stable strategy [0.0, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0]. Best the last 20 times.
+    \\ \hline
+    10 & 10 & 0.3 & 0.0 & 
+    Strong convergence to a strategy with the last element has all troops.
+    \\ \hline
+    11 & 10 & 1.0 & 0.0 &
+    Convergence to a strategy with it main focus on the last battle. Synonym strategies was best the 30 last time.
+    \\ \hline
+    12 & 10 & 0.0 & 0.4 &
+    Convergence to a strategy with it main focus on the first battle. Strategy best the last 50 times 
+    \\ \hline
+    13 & 10 & 0.0 & 1.0 &
+    Convergence to the strategy with 1.0 distribution in the first battle.
+    \\ \hline
+    14 & 10 & 0.3 & 0.4 &
+    Convergence to a strategy with .4 as first battle and .27 as the next. Other battles have small troop allocation. Fairly high entropy.
+    \\ \hline
+    15 & 10 & 1.0 & 0.4 &
+    Convergence to [0.55, 0.1, 0.0, 0.2, 0.05, 0.0, 0.05, 0.0, 0.05, 0.0]. Best the last 40 times
+    \\ \hline
+    16 & 10 & 1.0 & 1.0 &
+    Convergence to a strategy focusing on the first battle. Fairly low average entropy.
+    \\ \hline
+    17 & 20 & 0.0 & 0.0 & 
+    Convergence to one strategy. Fairly high entropy; pretty evenly distributed troops.
+    \\ \hline
+    18 & 20 & 0.3 & 0.0 & 
+    Continuous shifting between two strategies. Similar strategies but do not appear to be equivalent.
+    \\ \hline
+    19 & 20 & 1.0 & 0.0 &
+    Convergence to a strategy with it main focus on the last battle but also smaller values regularly in earlier battles.
+    \\ \hline
+    20 & 20 & 0.0 & 0.4 &
+    Convergence to a strategy with it main focus on the first battle, but also smaller values throughout the battles.  
+    \\ \hline
+    21 & 20 & 0.0 & 1.0 &
+    Convergence to the strategy with focus on the first battle. About .5 in the first battle, and about .04 on battle 4, 6, 8, 11, 13, 14.
+    \\ \hline
+    22 & 20 & 0.3 & 1.0 &
+    Battle between two strong strategies. One with .45 in the first battle and the other with .35. High entropy.
+    \\ \hline
+    23 & 20 & 1.0 & 0.4 &
+    Convergence to a strategy with evenly distributed troops. Entropy in the >3 interval.
+    \\ \hline
+    24 & 20 & 1.0 & 1.0 &
+    Shifting between two strategies. Both high focus on the first 4 battles.
+    \\ \hline
+\end{tabularx}
+\caption{Summarization of results of base runs}
+\label{tab:baseruns}
+\end{table}
+\end{center}

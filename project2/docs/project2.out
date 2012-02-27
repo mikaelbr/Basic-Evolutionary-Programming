@@ -1,0 +1,14 @@
+\BOOKMARK [0][-]{chapter.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.1.1}{About the project}{chapter.1}% 2
+\BOOKMARK [0][-]{chapter.2}{Deliverables}{}% 3
+\BOOKMARK [1][-]{section.2.1}{Description of the system}{chapter.2}% 4
+\BOOKMARK [2][-]{subsection.2.1.1}{Extensions to the original code}{section.2.1}% 5
+\BOOKMARK [2][-]{subsection.2.1.2}{Genotype representation}{section.2.1}% 6
+\BOOKMARK [2][-]{subsection.2.1.3}{Fitness function}{section.2.1}% 7
+\BOOKMARK [1][-]{section.2.2}{Test Cases}{chapter.2}% 8
+\BOOKMARK [2][-]{subsection.2.2.1}{Spike Time Distance Metric}{section.2.2}% 9
+\BOOKMARK [2][-]{subsection.2.2.2}{Spike Interval Distance Metric}{section.2.2}% 10
+\BOOKMARK [2][-]{subsection.2.2.3}{Waveform Distance Metric}{section.2.2}% 11
+\BOOKMARK [1][-]{section.2.3}{Genotype-Phenotype Mapping}{chapter.2}% 12
+\BOOKMARK [1][-]{section.2.4}{Practical Implications}{chapter.2}% 13
+\BOOKMARK [1][-]{section.2.5}{Other Problem Domains}{chapter.2}% 14
