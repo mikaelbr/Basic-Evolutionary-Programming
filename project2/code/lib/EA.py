@@ -95,17 +95,17 @@ class EA:
 
             # print "PRE ADULTS"
             print "\n\n\n------- GENERATION %s -------- \n Length: %s \n\n\n" % (generation, len(self.population.children))
-            for item in self.population.children[:]:
-                fitness = item.fitness_value;
+            # for item in self.population.children[:]:
+            #     fitness = item.fitness_value;
 
-                if fitness is None:
-                    fitness = 0
+            #     if fitness is None:
+            #         fitness = 0
 
-                # Collect all denary values from genotype, categorized by 5 bits interval
-                params = [int(item.value[i:i+item.gene_size], 2) for i in range(0, len(item.value), item.gene_size)]
-                # Need to encode values to fit to given ranges/intervals
-                a, b, c, d, k = item.fit_range (params)
-                print "Value %s, %s, %s, %s, %s, fitness: %s" % (a, b, c, d, k, fitness)
+            #     # Collect all denary values from genotype, categorized by 5 bits interval
+            #     params = [int(item.value[i:i+item.gene_size], 2) for i in range(0, len(item.value), item.gene_size)]
+            #     # Need to encode values to fit to given ranges/intervals
+            #     a, b, c, d, k = item.fit_range (params)
+            #     print "Value %s, %s, %s, %s, %s, fitness: %s" % (a, b, c, d, k, fitness)
 
             # Adult selection
             self.adult_select()

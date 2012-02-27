@@ -20,19 +20,12 @@ param_range = {
     'k': [0.01, 1.0]
 }
 
-def get_target_data():
+def get_target_data(file_num):
 
-    def read_file(path):
-        with open(path, 'r') as f:
-            return [float(i) for i in f.readline().strip().split(' ')]
+    filepath = 'data/izzy-train%s.dat' % file_num
 
-
-    return [
-        read_file('data/izzy-train1.dat'), 
-        read_file('data/izzy-train2.dat'), 
-        read_file('data/izzy-train3.dat'), 
-        read_file('data/izzy-train4.dat')
-        ]
+    with open(filepath, 'r') as f:
+        return [float(i) for i in f.readline().strip().split(' ')]
 
 
 class SpikingNeuron(Indevidual):
@@ -260,8 +253,6 @@ class SDM(object):
 
 # Fitness function
 def fitness_test(metric_fn, target, penalty = True, p = 2.0):
-
-
     
     def closure_fn (phenotype_value):
         return metric_fn(phenotype_value, target, p, penalty)
@@ -335,8 +326,8 @@ class SpikingNeuronPlotter(Plotter):
 std_values = {
     'output_file': 'spiking',
     'do_plot': True,
-    'pop_size':  200,
-    'mutation_probability': 0.3,
+    'pop_size':  100,
+    'mutation_probability': 0.25,
     'birth_probability': 1.0,
     'gene_size': 7, # The bit size for each gene (parameter)
     'generations': 200,
@@ -357,10 +348,8 @@ std_values = {
 if __name__ == "__main__":
 
     import argparse
-    from IPython.config import loader
 
-
-    parser = loader.ArgumentParser(version='0.1', description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser = argparse.ArgumentParser(version='0.1', description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument(
         '-o', 
@@ -486,7 +475,7 @@ if __name__ == "__main__":
 
 
     target_spikes = get_target_data()
-    target = target_spikes[1];
+    target = target_spikes[0];
 
     create_objects = create_data(args.gene_size, args.metric_fn, target)
     population = Population(args.pop_size, create_objects)
