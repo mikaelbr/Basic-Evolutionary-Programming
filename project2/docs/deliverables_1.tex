@@ -4,7 +4,7 @@
 This project is based on the previously developed EA from project 1 A and B. Except for some minor changes 
 to the genetic functions (see section \hyperref[sec:geneticchanges]{Minor changes}), the code is identical.
 
-As the system is highly object oriented, all the alterations and implementations spesific to any problem,
+As the system is highly object oriented, all the alterations and implementations specific to any problem,
 is extended as sub classes of the main "framework" given by the EA library. 
 
 In this section, an explanation of all the different sub classes can be found, description of the genotype
@@ -13,7 +13,7 @@ representation and fitness function.
 \subsection{Extensions to the original code}
 \label{sec:extensions}
 
-There are three extending classes that overwrites/extends standard behaviour; The individual,
+There are three extending classes that overwrites/extends standard behavior; The individual,
 mutation and the plotting. In addition there is a new class for calculating the spike distance, with 
 three different methods.
 
@@ -61,9 +61,9 @@ are a generated list of the spike times in the train.
 
 \subsubsection{Helper functions and the main execution file}
 
-The main executon file handles all the interaction between the command line and the application. As
+The main execution file handles all the interaction between the command line and the application. As
 with the previous project, all values can be changed through flags passed as arguments in the command
-line. Full overview of which flags are availeble, can be found bu running the main file, and attaching the $-h$ flag. 
+line. Full overview of which flags are available, can be found by running the main file, and attaching the $-h$ flag. 
 
 A helper function is created to read the data set. This method takes a number between 1 and 4, as argument and 
 returns the data train set according to the argument number. \\
@@ -79,10 +79,10 @@ $ ./izhikevich.py -h
 \label{sec:geneticchanges}
 
 The crossover functions needed a fix, as they didn't take consideration for a genotype with genes larger
-then one bit. So the genes would be splitted up, and that destroyd the evolving. \\
+then one bit. So the genes would be splitted up, and that destroyed the evolving. \\
 
-The elitism and truncation methods were also falty. Elitism now uses the right population group, and the
-is no longer part of the parent selection, but rather gets emediatly passed as a child. They don't get mutated. 
+The elitism and truncation methods were also faulty. Elitism now uses the right population group, and the
+is no longer part of the parent selection, but rather gets immediately passed as a child. They don't get mutated. 
 
 
 \subsection{Genotype representation}

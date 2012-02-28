@@ -1,7 +1,7 @@
 \section{Test Cases}
 
 
-Below the standard settings for all test cases can be seen. The system is runnning
+Below the standard settings for all test cases can be seen. The system is running
 with full generational replacement as adult selection, and Tournament mechanism for
 parent selection.
 
@@ -57,13 +57,13 @@ Shape looks good, and the lower values. The spike values was lower than the targ
 A bit more off on the shape. But overall timing looks OK.  \\
 
 \textbf{Spike-Train \#3} \\
-A bit off on the timing, but the shapes looks simulare.  \\
+A bit off on the timing, but the shapes looks similar.  \\
 
 \textbf{Spike-Train \#4} \\
-Was trickyer than the rest. Had to increase mutation rate. With that the results got much better. The timing looks good.  \\
+Was trickier than the rest. Had to increase mutation rate. With that the results got much better. The timing looks good.  \\
 
 \textbf{Overall} \\
-Since the metric does't take the peak heights into codsideration, but rather only base the fitness of the time intervals between spikes, we only look at the shapes and timing for this
+Since the metric does't take the peak heights into consideration, but rather only base the fitness of the time intervals between spikes, we only look at the shapes and timing for this
 one. We can see that for the most part it matches up to the target. Typical fitness varied from 1.0 to 0.45. 
 
 \insertgraph{spiking-act-1}{Spike Time Distance Metric: Activation-Level graph for target 1}
@@ -109,11 +109,11 @@ The results are probably this poor due to the metric not taking the spike positi
 only the sum of the distance between their position. \\
 
 \textbf{Spike-Train \#1} \\
-Looks absolutely ridiculous in the activation-level graph. But the fitness is OK, compared to prevous metric. 
+Looks absolutely ridiculous in the activation-level graph. But the fitness is OK, compared to previous metric. 
 And looking at the distance between all of the spikes, it looks like it could match up to the target. \\
 
 \textbf{Spike-Train \#2} \\
-This looks much better. Still not optimal, and the timeing simularities are problably pretty coinsidental. \\
+This looks much better. Still not optimal, and the timing similarities are probably pretty coincidental. \\
 
 \textbf{Spike-Train \#3} \\
 Also looks quite ridiculous, but you can kind of see that the distances might match to the extent that the
@@ -123,7 +123,7 @@ fitness says.  \\
 Can see the same tendencies as the rest of the spike-trains. You can see shadows of the overall shape.  \\
 
 \textbf{Overall} \\
-Rather poor results, timeing-vise. Also had problems with fitness convergence and stagnated fast. Tried multiple
+Rather poor results, timing-vise. Also had problems with fitness convergence and stagnated fast. Tried multiple
 setups, without any real results to show for. 
 
 \insertgraph{spiking-act-5}{Spike Interval Metric: Activation-Level graph for target 1}
@@ -162,7 +162,7 @@ setups, without any real results to show for.
 \subsubsection{Description}
 
 On average, this metric gets higher fitness, even though it gives worse results than the spike time
-distance metric. This might be explaned by the way the metric works. It calculates the sum of the 
+distance metric. This might be explained by the way the metric works. It calculates the sum of the 
 difference in the "areal" of between two corresponding spikes. Since most of the spikes has low
 "areal", the distance is lower and therefor the fitness is higher.   \\
 
@@ -179,12 +179,12 @@ are in the proximity of the target at the beginning of the graph. \\
 
 \textbf{Spike-Train \#3} \\
 This looks much more like the target. There are a bit less spikes in the calculated one, compared to the
-target, but shapes, values and timeing looks OK. \\
+target, but shapes, values and timing looks OK. \\
 
 
 \textbf{Spike-Train \#4} \\
-Looks good in convergance of the fitness at the beginning of the run, but stagnates quickly and stays unchanged later on. 
-The result share the same traits as the prevouis spike-trains. \\
+Looks good in convergence of the fitness at the beginning of the run, but stagnates quickly and stays unchanged later on. 
+The result share the same traits as the previous spike-trains. \\
 
 
 \textbf{Overall} \\
