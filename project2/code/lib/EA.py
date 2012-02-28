@@ -52,9 +52,9 @@ class EA:
             return
 
         parents = self.population.parents[:]
-        for i in range(0, len(parents)-1):
+        for i in range(0, len(parents)):
             if i % 2 == 1:
-                child1, child2 = parents[i-1], parents[i]
+                child1, child2 = copy.deepcopy(parents[i-1]), copy.deepcopy(parents[i])
 
                 if self.reproduction.birth_probability > random.random():
                     # print "Parents: \n %s \n %s" % (child1.value, child2.value)
@@ -62,8 +62,8 @@ class EA:
                     # print "Kids: \n %s \n %s" % (child1.value, child2.value)
 
 
-                self.population.children.append(copy.deepcopy(child1))
-                self.population.children.append(copy.deepcopy(child2))
+                self.population.children.append(child1)
+                self.population.children.append(child2)
 
 
     def mutate(self):
@@ -110,15 +110,16 @@ class EA:
             # Adult selection
             self.adult_select()
 
+            # print "PRE ADULTS"
             # Parent selection
             self.parent_select()
-
 
             # Now the parents-attribute in the Population should
             # be filled and ready for reproduction.
 
             # Reproduction
             self.birth()
+
             self.mutate()
 
             # Intitiate Jean-Luc Picard; The Next Generation

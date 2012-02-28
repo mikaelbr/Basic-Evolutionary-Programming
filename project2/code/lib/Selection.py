@@ -183,6 +183,7 @@ class SelectionStrategy(object):
 
         # Check if we have protocol defined for the strategy
         if self.protocol_name is not None:
+            orig_size = len(population.children)
             if self.protocol is None:
                 self.protocol = self.protocol_name(self.output_size, population)
 
@@ -190,7 +191,7 @@ class SelectionStrategy(object):
             self.protocol.do()
 
             # Need to check if we have enough indeviduals
-            if len(population.adults) < self.size:
+            if len(population.adults) < orig_size:
                 population.adults.sort(key=attrgetter('fitness_value'), reverse=True)
                 for i in range(self.size - len(population.adults)):
                     population.adults.append(copy.deepcopy(population.adults[i % len(population.adults)]))
@@ -212,7 +213,10 @@ class SelectionStrategy(object):
                 E = self.elitism
                 if E < 1: # a fraction
                     E = int(len(new_population)*E)
-                population.children.extend(copy.deepcopy(new_population[:E]))
+
+                #for i in range(E, len(new_population)):
+                    population.children.extend(copy.deepcopy(new_population[:E]))
+
                 self.size -= E
 
             # Truncation - Removal of parents as parents. 

@@ -23,7 +23,7 @@ param_range = {
 def get_target_data(file_num):
 
     filepath = 'data/izzy-train%s.dat' % file_num
-
+    print filepath
     with open(filepath, 'r') as f:
         return [float(i) for i in f.readline().strip().split(' ')]
 
@@ -37,7 +37,6 @@ class SpikingNeuron(Indevidual):
         # Generate new genotype if not defined
         if value is None:
             binary_helper = '{:0'+str(gene_size)+'b}'
-
             # Create the genotype. A concatonated string of all genes
             value = ''.join([binary_helper.format(random.randint(0, self.max_value)) 
                 for i in range(std_values['num_params'])])
@@ -87,6 +86,7 @@ class SpikingNeuron(Indevidual):
         """
         # Collect all denary values from genotype, categorized by 5 bits interval
         params = [int(self.value[i:i+self.gene_size], 2) for i in range(0, len(self.value), self.gene_size)]
+        
 
         # Need to encode values to fit to given ranges/intervals
         a, b, c, d, k = self.fit_range (params)
@@ -101,8 +101,9 @@ class SpikingNeuron(Indevidual):
 
         for t in range(std_values['timesteps']):
             tmp = v
-            v += ( (k * pow(v, 2.0)) + (5*v) + 140 - u + std_values['I'])/std_values['tau']
-            u += (a/float(std_values['tau'])) * ((b*tmp) - u)
+
+            v += ( (k * v * v) + (5*v) + 140 - u + std_values['I'])/std_values['tau']
+            u += (a * ((b*tmp) - u)) / float(std_values['tau'])
 
             spike_train.append(v)
 
@@ -142,30 +143,30 @@ class SDM(object):
         spike_times = []
         num_spikes = len(train)
 
-        
         i = j = (k - 1) // 2
         while (i < len(train) - j):
             if train[i] > T and train[i] == max(train[i-j:i+j+1]):
                 spike_times.append(i)
-                i += j # Jump to next window or?
+                #i += j # Jump to next window or?
             i += 1
 
         return spike_times
         """
 
-        for i in range(0, num_spikes-k):
+        for i in range(2, num_spikes-2):
             # Move through windows of size k. 
             # Check if a spike fits constraints a, b and c from 2. in comments
-            middle = (k-1)//2 + i # middle index
+            middle = ( k // 2 ) + i # middle index
             if middle > num_spikes:
                 continue
 
-            if train[middle] > T and train[middle] == max(train[i:i+k]):
+            if train[middle] > T and train[middle] == max(train[i:i+middle]):
                 spike_times.append(i)
-                i += k
+                i += middle
 
         return spike_times
         """
+
 
 
     @staticmethod
@@ -188,7 +189,9 @@ class SDM(object):
 
             d_st(T^a,T^b) = 1/N * (sum(|t_i^a − t_i^b|^p, 0, N-1))^1/p
         """
+
         spikes1, spikes2 = SDM.compute_spike_times(train1), SDM.compute_spike_times(train2)
+
 
         if not spikes1:
             return 0
@@ -200,11 +203,12 @@ class SDM(object):
         if penalty:
             tmp += SDM.difference_penalty(spikes1, spikes2, train1)
 
-        distance = math.sqrt(tmp) / N
+        dist = pow(tmp, (1.0/p)) / float(N)
         #print distance
         #print "Target: %s \n Spikes1: %s " % (spikes2, spikes1)
         # print "Target Train (%s): %s \n Train1 (%s): %s " % (len(train2), train2, len(train1), train1)
-        return 1.0/distance
+
+        return 1.0/dist
 
 
     @staticmethod
@@ -221,7 +225,6 @@ class SDM(object):
 
         N = min(len(spikes1), len(spikes2))
 
-
         if N < 2:
             return 0
 
@@ -231,7 +234,12 @@ class SDM(object):
         if penalty:
             tmp += SDM.difference_penalty(spikes1, spikes2, train1)
 
-        return 1.0/(pow(tmp, (1.0/p))/float((1.0/(N-1))))
+        dist = (pow(tmp, (1.0/p))/float((1.0/(N-1))))
+
+        if dist == 0.0:
+            return 1.0
+
+        return 1.0/dist
 
 
     @staticmethod
@@ -271,9 +279,10 @@ class SpikeMutation(Mutation):
 
         #print "New Gene %s " % new_gene
         g1.value = (g1.value[:s] + new_gene + g1.value[s+g1.gene_size:])
+        g1.phenotype = None
 
 
-def create_data(gene_size, metric_fn, target, penalty = True):
+def create_data(gene_size, metric_fn, target, penalty = False):
     """
         A closure solution to pass arguments in the inner function.
         This way we can initiate the Indevidual subclass with 
@@ -290,9 +299,9 @@ def create_data(gene_size, metric_fn, target, penalty = True):
 class SpikingNeuronPlotter(Plotter):
 
     def update (self, generation, population):
-
-        self.population = population.children[:] + population.adults[:]
-        self.population.sort(key=attrgetter('fitness'), reverse=True)
+        pop = population.children[:] + population.adults[:]
+        pop.sort(key=attrgetter('fitness'), reverse=True)
+        self.best = copy.deepcopy(pop[0])
 
 
         super(SpikingNeuronPlotter, self).update(generation, population)
@@ -301,7 +310,7 @@ class SpikingNeuronPlotter(Plotter):
         fig = plt.figure()
         ax = fig.add_subplot(111)
 
-        best_result = self.population[0]
+        best_result = self.best
         spike_train = best_result.phenotype
 
 
@@ -312,7 +321,7 @@ class SpikingNeuronPlotter(Plotter):
 
         print "Best result: a: %s, d: %s, c: %s, d: %s, k: %s" % (a, b, c, d, k)
 
-        x_axis = list(range(len(spike_train)));
+        x_axis = list(range(len(spike_train)))
         ax.plot(list(range(len(spike_train))), spike_train, 'r', label="Act") 
         plt.xlabel('Time(ms)')
         plt.ylabel('Activation-Level(mV)')
@@ -327,21 +336,22 @@ std_values = {
     'output_file': 'spiking',
     'do_plot': True,
     'pop_size':  100,
-    'mutation_probability': 0.25,
+    'mutation_probability': 0.15,
     'birth_probability': 1.0,
     'gene_size': 7, # The bit size for each gene (parameter)
     'generations': 200,
     'protocol': 'FullReplacement',
     'mechanism': 'Tournament',
     'reproduction': 'BinaryOnePointCrossover',
-    'elitism': 0.04,
+    'elitism': 0.05,
     'truncation': 0.05,
     'tau': 10.0,
     'I': 10.0,
     'timesteps': 1000,
     'spike_threshold': 35, # mV (milli Volts)
     'num_params': 5, # The number of parameters: a, b, c, d, k
-    'metric_fn': SDM.spike_time_distance_metric # The number of parameters: a, b, c, d, k
+    'metric_fn': SDM.spike_time_distance_metric, # The number of parameters: a, b, c, d, k
+    'penalty': True # The number of parameters: a, b, c, d, k
 }
 
 
@@ -469,15 +479,13 @@ if __name__ == "__main__":
 
 
     args = parser.parse_args()
-    output_size = args.pop_size # - int(args.pop_size * 0.05)
+    output_size = args.pop_size - int(args.pop_size * 0.05)
 
     print args
 
+    target = get_target_data(1)
 
-    target_spikes = get_target_data()
-    target = target_spikes[0];
-
-    create_objects = create_data(args.gene_size, args.metric_fn, target)
+    create_objects = create_data(args.gene_size, args.metric_fn, target, std_values['penalty'])
     population = Population(args.pop_size, create_objects)
 
     adult_selection = SelectionStrategy(output_size, str_to_class(args.protocol))
