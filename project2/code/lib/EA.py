@@ -122,6 +122,10 @@ class EA:
 
             self.mutate()
 
+            # To avoid mutation and crossover on elitisms
+            self.population.children.extend(self.population.elitsm);
+            self.population.elitsm = []
+
             # Intitiate Jean-Luc Picard; The Next Generation
         
         

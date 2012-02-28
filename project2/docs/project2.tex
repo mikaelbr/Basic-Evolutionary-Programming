@@ -43,10 +43,10 @@
 % \def  \plotpath {../code/A/plots/}
 
 % Use a new command to wrap std functionality
-\newcommand{\insertplot}[3][H]{
+\newcommand{\insertgraph}[3][H]{
 	\begin{figure}[#1]
 	    \begin{center}
-	        \includegraphics[width=0.7\textwidth]{../code/A/plots/#2}
+	        \includegraphics[width=0.7\textwidth]{../code/plots/#2}
 	    \end{center}
 	    \caption{#3}
 	    \label{fig:#2}

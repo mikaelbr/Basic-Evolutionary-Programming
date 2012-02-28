@@ -199,6 +199,7 @@ class SelectionStrategy(object):
 
         # Check if we have mechanism defined for the strategy
         if self.mechanism_name is not None:
+            tmp_size = self.size
             population.parents = []
             if self.mechanism is None:
                 self.mechanism = self.mechanism_name(self.size, population)
@@ -206,24 +207,24 @@ class SelectionStrategy(object):
             
             # Elitism - Select a few to go directly to the next generation.
             # Do not mutate or recombine.
-            new_population = population.parents[:]
+            new_population = population.adults[:]
             new_population.sort(key=attrgetter('fitness_value'), reverse=True)
             
             if self.elitism > 0:
                 E = self.elitism
                 if E < 1: # a fraction
                     E = int(len(new_population)*E)
+                    population.elitsm = copy.deepcopy(new_population[:E])
 
-                #for i in range(E, len(new_population)):
-                    population.children.extend(copy.deepcopy(new_population[:E]))
-
+                for i in population.elitsm:
+                    print "Elitism: %s" % i.fitness_value
                 self.size -= E
 
-            # Truncation - Removal of parents as parents. 
-            population.parents.sort(key=attrgetter('fitness_value'), reverse=True)
+            # Truncation - Removal of parents as parents.
+            population.adults.sort(key=attrgetter('fitness_value'), reverse=True)
             if self.truncation > 0:
-                F = int(len(population.parents)*self.truncation)
-                del population.parents[-F:]
+                F = int(len(population.adults)*self.truncation)
+                del population.adults[-F:]
 
             # Do selection mechanism
             self.mechanism.do()
@@ -233,4 +234,6 @@ class SelectionStrategy(object):
                 population.parents.sort(key=attrgetter('fitness_value'), reverse=True)
                 for i in range(self.size - len(population.parents)):
                     population.parents.append(copy.deepcopy(population.parents[i % len(population.parents)]))
+
+            self.size = tmp_size
 

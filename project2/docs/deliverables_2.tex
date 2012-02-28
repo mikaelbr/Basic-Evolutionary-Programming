@@ -1,5 +1,6 @@
 \section{Test Cases}
 
+
 Below the standard settings for all test cases can be seen. The system is runnning
 with full generational replacement as adult selection, and Tournament mechanism for
 parent selection.
@@ -11,81 +12,194 @@ std_values = {
     'output_file': 'spiking',
     'do_plot': True,
     'pop_size':  100,
-    'mutation_probability': 0.25,
+    'mutation_probability': 0.3,
     'birth_probability': 1.0,
     'gene_size': 7, # The bit size for each gene (parameter)
     'generations': 200,
     'protocol': 'FullReplacement',
     'mechanism': 'Tournament',
-    'reproduction': 'BinaryOnePointCrossover',
+    'reproduction': 'BinaryTwoPointCrossover',
     'elitism': 0.04,
     'truncation': 0.05,
     'tau': 10.0,
     'I': 10.0,
     'timesteps': 1000,
-    'spike_threshold': 35 # mV (milli Volts)
+    'spike_threshold': 35, # mV (milli Volts)
 }
 \end{lstlisting}
 
 \subsection{Spike Time Distance Metric}
-Best result: a: 0.0417401574803, d: 0.169842519685, c: -50, d: 8.98661417323, k: 0.0489763779528
 
 \begin{table}[H]
 	\begin{center}
-		\begin{tabular}{ | l | c | c | c | c | c | l |}
+		\begin{tabular}{ | l | c | c | c | c | c | l | l |}
 	
 	    \hline
-	    
-	  	\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots} \\ \hline
-	  	\textbf{Spike-Train \#}1 & 0.0276377952756 & 0.0533858267717 & -34 & 5.7905511811 & 0.0411811023622 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#2} & 0.0417401574803 & 0.169842519685 & -50 & 8.98661417323 & 0.0489763779528 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#3} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#4} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\  \hline
-	  	
+
+			\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots}  \\ \hline 
+			\textbf{Spike-Train \#}1 & 0.0480 & 0.0420 & -44 & 3.4520 & 0.0412 & \autoref{fig:spiking-act-1}, \autoref{fig:spiking-1} \\ \hline 
+			\textbf{Spike-Train \#2} & 0.0229 & 0.2064 & -80 & 9.7661 & 0.0568 & \autoref{fig:spiking-act-2}, \autoref{fig:spiking-2} \\ \hline 
+			\textbf{Spike-Train \#3} & 0.0558 & 0.0899 & -42 & 3.7638 & 0.0412 & \autoref{fig:spiking-act-3}, \autoref{fig:spiking-3} \\ \hline 
+			\textbf{Spike-Train \#4} & 0.0026 & 0.3 & -53 & 8.6748 & 0.0724 & \autoref{fig:spiking-act-4}, \autoref{fig:spiking-4}    \\ \hline 
+
 	    \end{tabular}
 	
 	\end{center}
     \caption{Test cases for Spike Time Distance Metric}
 \end{table}
 
+\subsubsection{Description}
+
+\textbf{Spike-Train \#1} \\
+Shape looks good, and the lower values. The spike values was lower than the target.   \\
+
+\textbf{Spike-Train \#2} \\
+A bit more off on the shape. But overall timing looks OK.  \\
+
+\textbf{Spike-Train \#3} \\
+A bit off on the timing, but the shapes looks simulare.  \\
+
+\textbf{Spike-Train \#4} \\
+Was trickyer than the rest. Had to increase mutation rate. With that the results got much better. The timing looks good.  \\
+
+\textbf{Overall} \\
+Since the metric does't take the peak heights into codsideration, but rather only base the fitness of the time intervals between spikes, we only look at the shapes and timing for this
+one. We can see that for the most part it matches up to the target. Typical fitness varied from 1.0 to 0.45. 
+
+\insertgraph{spiking-act-1}{Spike Time Distance Metric: Activation-Level graph for target 1}
+\insertgraph{spiking-1}{Spike Time Distance Metric: Fitness graph for target 1}
+
+\insertgraph{spiking-act-2}{Spike Time Distance Metric: Activation-Level graph for target 2}
+\insertgraph{spiking-2}{Spike Time Distance Metric: Fitness graph for target 2}
+
+\insertgraph{spiking-act-3}{Spike Time Distance Metric: Activation-Level graph for target 3}
+\insertgraph{spiking-3}{Spike Time Distance Metric: Fitness graph for target 3}
+
+\insertgraph{spiking-act-4}{Spike Time Distance Metric: Activation-Level graph for target 4}
+\insertgraph{spiking-4}{Spike Time Distance Metric: Fitness graph for target 4}
 
 \subsection{Spike Interval Distance Metric}
 
 \begin{table}[H]
 	\begin{center}
-		\begin{tabular}{ | l | c | c | c | c | c | l |}
+		\begin{tabular}{ | l | c | c | c | c | c | l | l |}
 	
 	    \hline
-	    
-	  	\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots} \\ \hline
-	  	\textbf{Spike-Train \#}1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#2} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#3} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#4} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\  \hline
-	  	
+
+			\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots}  \\ \hline 
+			\textbf{Spike-Train \#}1 & 0.0026 & 0.1881 & -60 & 8.2850 & 0.4309 & \autoref{fig:spiking-act-5}, \autoref{fig:spiking-5} \\ \hline 
+			\textbf{Spike-Train \#2} & 0.0167 & 0.1767 & -40 & 9.4543 & 0.0802 & \autoref{fig:spiking-act-6}, \autoref{fig:spiking-6} \\ \hline 
+			\textbf{Spike-Train \#3} & 0.0120 & 0.2269 & -78 & 7.7394 & 0.2127 & \autoref{fig:spiking-act-7}, \autoref{fig:spiking-7} \\ \hline 
+			\textbf{Spike-Train \#4} & 0.0010 & 0.2909 & -35 & 5.7126 & 0.3530 & \autoref{fig:spiking-act-8}, \autoref{fig:spiking-8}    \\ \hline 
+
 	    \end{tabular}
 	
 	\end{center}
     \caption{Test cases for Spike Interval Distance Metric}
 \end{table}
 
+\subsubsection{Description}
+
+Had some difficulty getting good results here. Tried various alterations on the EA parameters,
+but the results were highly inconsistent. I tried without any penalty, but would often come
+a cross 0 in difference. This could possibly be very good, but more often rather bad. So the penalty
+was required. \\
+
+The results are probably this poor due to the metric not taking the spike position into account, but
+only the sum of the distance between their position. \\
+
+\textbf{Spike-Train \#1} \\
+Looks absolutely ridiculous in the activation-level graph. But the fitness is OK, compared to prevous metric. 
+And looking at the distance between all of the spikes, it looks like it could match up to the target. \\
+
+\textbf{Spike-Train \#2} \\
+This looks much better. Still not optimal, and the timeing simularities are problably pretty coinsidental. \\
+
+\textbf{Spike-Train \#3} \\
+Also looks quite ridiculous, but you can kind of see that the distances might match to the extent that the
+fitness says.  \\
+
+\textbf{Spike-Train \#4} \\
+Can see the same tendencies as the rest of the spike-trains. You can see shadows of the overall shape.  \\
+
+\textbf{Overall} \\
+Rather poor results, timeing-vise. Also had problems with fitness convergence and stagnated fast. Tried multiple
+setups, without any real results to show for. 
+
+\insertgraph{spiking-act-5}{Spike Interval Metric: Activation-Level graph for target 1}
+\insertgraph{spiking-5}{Spike Interval Metric: Fitness graph for target 1}
+
+\insertgraph{spiking-act-6}{Spike Interval Metric: Activation-Level graph for target 2}
+\insertgraph{spiking-6}{Spike Interval Metric: Fitness graph for target 2}
+
+\insertgraph{spiking-act-7}{Spike Interval Metric: Activation-Level graph for target 3}
+\insertgraph{spiking-7}{Spike Interval Metric: Fitness graph for target 3}
+
+\insertgraph{spiking-act-8}{Spike Interval Metric: Activation-Level graph for target 4}
+\insertgraph{spiking-8}{Spike Interval Metric: Fitness graph for target 4}
+
 
 \subsection{Waveform Distance Metric}
 
 \begin{table}[H]
 	\begin{center}
-		\begin{tabular}{ | l | c | c | c | c | c | l |}
+		\begin{tabular}{ | l | c | c | c | c | c | l | l |}
 	
 	    \hline
-	    
-	  	\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots} \\ \hline
-	  	\textbf{Spike-Train \#}1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#2} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#3} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\ \hline
-	  	\textbf{Spike-Train \#4} & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & Figur 1, Figur 2 \\  \hline
-	  	
+
+			\textbf{Target Spike Trains} & \textbf{$a$} & \textbf{$b$} & \textbf{$c$} & \textbf{$d$} & \textbf{$k$} & \textbf{Plots}  \\ \hline 
+			\textbf{Spike-Train \#}1 & 0.0057 & 0.1744 & -51 & 2.2047 & 0.0412 & \autoref{fig:spiking-act-9}, \autoref{fig:spiking-9} \\ \hline 
+			\textbf{Spike-Train \#2} & 0.0010 & 0.1287 & -60 & 7.3496 & 0.0568 & \autoref{fig:spiking-act-10}, \autoref{fig:spiking-10} \\ \hline 
+			\textbf{Spike-Train \#3} & 0.0872 & 0.0580 & -40 & 7.2717 & 0.0412 & \autoref{fig:spiking-act-11}, \autoref{fig:spiking-11} \\ \hline 
+			\textbf{Spike-Train \#4} & 0.0010 & 0.1972 & -41 & 8.2070 & 0.0646 & \autoref{fig:spiking-act-12}, \autoref{fig:spiking-12}    \\ \hline 
+
 	    \end{tabular}
 	
 	\end{center}
     \caption{Test cases for Waveform Distance Metric}
 \end{table}
+
+\subsubsection{Description}
+
+On average, this metric gets higher fitness, even though it gives worse results than the spike time
+distance metric. This might be explaned by the way the metric works. It calculates the sum of the 
+difference in the "areal" of between two corresponding spikes. Since most of the spikes has low
+"areal", the distance is lower and therefor the fitness is higher.   \\
+
+
+\textbf{Spike-Train \#1} \\
+Overall shape looks good, but there are less spikes and too high value of each spike. 
+
+
+\textbf{Spike-Train \#2} \\
+Had a lot of troubles with this one. It might be because the spike-trains basic shape, with
+lots of thin, high spikes, and the nature of the waveform distance metric. The values (high and low points)
+are in the proximity of the target at the beginning of the graph. \\
+
+
+\textbf{Spike-Train \#3} \\
+This looks much more like the target. There are a bit less spikes in the calculated one, compared to the
+target, but shapes, values and timeing looks OK. \\
+
+
+\textbf{Spike-Train \#4} \\
+Looks good in convergance of the fitness at the beginning of the run, but stagnates quickly and stays unchanged later on. 
+The result share the same traits as the prevouis spike-trains. \\
+
+
+\textbf{Overall} \\
+Not as good as spike time distance metric, but a lot better than the spike interval distance metric. Gets high
+fitness due to the nature of the metric. \\
+
+
+\insertgraph{spiking-act-9}{Waveform Distance Metric: Activation-Level graph for target 1}
+\insertgraph{spiking-9}{Waveform Distance Metric: Fitness graph for target 1}
+
+\insertgraph{spiking-act-10}{Waveform Distance Metric: Activation-Level graph for target 2}
+\insertgraph{spiking-10}{Waveform Distance Metric: Fitness graph for target 2}
+
+\insertgraph{spiking-act-11}{Waveform Distance Metric: Activation-Level graph for target 3}
+\insertgraph{spiking-11}{Waveform Distance Metric: Fitness graph for target 3}
+
+\insertgraph{spiking-act-12}{Waveform Distance Metric: Activation-Level graph for target 4}
+\insertgraph{spiking-12}{Waveform Distance Metric: Fitness graph for target 4}

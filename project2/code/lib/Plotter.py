@@ -30,10 +30,6 @@ class Plotter(object):
         self.avg_fitness.append(avg)
 
         e_square = sum(math.pow(i, 2.0) for i in fitness)/fitness_size
-        print e_square
-        print math.pow(avg, 2.0)
-        print e_square - math.pow(avg, 2.0)
-        print math.sqrt(e_square - math.pow(avg, 2.0))
         self.std_dev_fitness.append(math.sqrt(e_square - math.pow(avg, 2.0)))
 
     def plot (self):

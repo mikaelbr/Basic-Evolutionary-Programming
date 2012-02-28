@@ -6,6 +6,7 @@ class Population(object):
         self.children = []
         self.adults = []
         self.parents = []
+        self.elitsm = []
         self.creation_closure = creation_closure
 
     def fill(self):

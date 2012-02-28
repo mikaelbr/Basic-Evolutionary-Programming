@@ -1,5 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+
+    Run an EA for finding the critical parameters for a single artificial neuron.
+
+"""
 
 from lib.EA import *
 from lib.Indevidual import *
@@ -23,7 +28,6 @@ param_range = {
 def get_target_data(file_num):
 
     filepath = 'data/izzy-train%s.dat' % file_num
-    print filepath
     with open(filepath, 'r') as f:
         return [float(i) for i in f.readline().strip().split(' ')]
 
@@ -143,16 +147,6 @@ class SDM(object):
         spike_times = []
         num_spikes = len(train)
 
-        i = j = (k - 1) // 2
-        while (i < len(train) - j):
-            if train[i] > T and train[i] == max(train[i-j:i+j+1]):
-                spike_times.append(i)
-                #i += j # Jump to next window or?
-            i += 1
-
-        return spike_times
-        """
-
         for i in range(2, num_spikes-2):
             # Move through windows of size k. 
             # Check if a spike fits constraints a, b and c from 2. in comments
@@ -165,7 +159,6 @@ class SDM(object):
                 i += middle
 
         return spike_times
-        """
 
 
 
@@ -204,9 +197,9 @@ class SDM(object):
             tmp += SDM.difference_penalty(spikes1, spikes2, train1)
 
         dist = pow(tmp, (1.0/p)) / float(N)
-        #print distance
-        #print "Target: %s \n Spikes1: %s " % (spikes2, spikes1)
-        # print "Target Train (%s): %s \n Train1 (%s): %s " % (len(train2), train2, len(train1), train1)
+
+        if dist == 0.0:
+            return 1.0
 
         return 1.0/dist
 
@@ -225,7 +218,7 @@ class SDM(object):
 
         N = min(len(spikes1), len(spikes2))
 
-        if N < 2:
+        if N < 2: # Avoid zero division
             return 0
 
         tmp = sum(pow(abs((spikes2[i] - spikes2[i-1]) - (spikes1[i] - spikes1[i-1])), p) for i in range(1, N))
@@ -234,7 +227,7 @@ class SDM(object):
         if penalty:
             tmp += SDM.difference_penalty(spikes1, spikes2, train1)
 
-        dist = (pow(tmp, (1.0/p))/float((1.0/(N-1))))
+        dist = (pow(tmp, (1.0/p))/float(N-1))
 
         if dist == 0.0:
             return 1.0
@@ -243,7 +236,7 @@ class SDM(object):
 
 
     @staticmethod
-    def waveform_distance_metric(train1, train2, p = 2, penalty = False):
+    def waveform_distance_metric(train1, train2, p = 2, penalty = None):
         """
             The waveform metric is the simplest of all. It compares 
             cotemporaneous activation levels across the two spike trains, 
@@ -253,10 +246,9 @@ class SDM(object):
 
             d_wf(T^a,T^b) = 1/M * (sum(|(v_i^a - v_i^b)|^p, 0, M-1))^1/p
         """
-        time_points = len(train1)
-        tmp = sum(pow(abs(train2[i] - train1[i]), p) for i in range(time_points))
-        distance = float(pow(tmp, 1.0/p)/float(time_points))
-        return 1.0/distance
+        M = len(train1)
+        tmp = sum(pow(abs(train2[i] - train1[i]), p) for i in range(M))
+        return 1.0/float(pow(tmp, 1.0/p)/float(M))
         
 
 # Fitness function
@@ -272,12 +264,10 @@ class SpikeMutation(Mutation):
      def do(self, g1): # REWRITE!!!
         """Randomly mutate a gene in the genotype."""
         s = random.randint(0, std_values['num_params']-1) * g1.gene_size
-        #print "Mutation s %s" % s
 
         binary_helper = '{:0'+str(g1.gene_size)+'b}'
         new_gene = binary_helper.format(random.randint(0, g1.max_value))
 
-        #print "New Gene %s " % new_gene
         g1.value = (g1.value[:s] + new_gene + g1.value[s+g1.gene_size:])
         g1.phenotype = None
 
@@ -300,8 +290,10 @@ class SpikingNeuronPlotter(Plotter):
 
     def update (self, generation, population):
         pop = population.children[:] + population.adults[:]
-        pop.sort(key=attrgetter('fitness'), reverse=True)
+        pop.sort(key=attrgetter('fitness_value'), reverse=True)
         self.best = copy.deepcopy(pop[0])
+
+        print "Best fitness: %s" % self.best.fitness_value
 
 
         super(SpikingNeuronPlotter, self).update(generation, population)
@@ -336,22 +328,23 @@ std_values = {
     'output_file': 'spiking',
     'do_plot': True,
     'pop_size':  100,
-    'mutation_probability': 0.15,
+    'mutation_probability': 0.3,
     'birth_probability': 1.0,
     'gene_size': 7, # The bit size for each gene (parameter)
     'generations': 200,
     'protocol': 'FullReplacement',
     'mechanism': 'Tournament',
-    'reproduction': 'BinaryOnePointCrossover',
-    'elitism': 0.05,
+    'reproduction': 'BinaryTwoPointCrossover',
+    'elitism': 0.04,
     'truncation': 0.05,
     'tau': 10.0,
     'I': 10.0,
     'timesteps': 1000,
     'spike_threshold': 35, # mV (milli Volts)
     'num_params': 5, # The number of parameters: a, b, c, d, k
-    'metric_fn': SDM.spike_time_distance_metric, # The number of parameters: a, b, c, d, k
-    'penalty': True # The number of parameters: a, b, c, d, k
+    'metric_fn': SDM.waveform_distance_metric, # The number of parameters: a, b, c, d, k
+    'penalty': True, # The number of parameters: a, b, c, d, k
+    'target': 1 # The number of parameters: a, b, c, d, k
 }
 
 
@@ -465,6 +458,14 @@ if __name__ == "__main__":
         default=std_values['metric_fn'],
         help='The metric distance function')
 
+    parser.add_argument(
+        '-target', 
+        action="store", 
+        dest="target",
+        type=int,
+        default=std_values['generations'],
+        help='Number of generations')
+
     import sys
     import types
     
@@ -483,7 +484,7 @@ if __name__ == "__main__":
 
     print args
 
-    target = get_target_data(1)
+    target = get_target_data(args.target)
 
     create_objects = create_data(args.gene_size, args.metric_fn, target, std_values['penalty'])
     population = Population(args.pop_size, create_objects)

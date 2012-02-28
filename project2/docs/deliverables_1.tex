@@ -66,13 +66,23 @@ with the previous project, all values can be changed through flags passed as arg
 line. Full overview of which flags are availeble, can be found bu running the main file, and attaching the $-h$ flag. 
 
 A helper function is created to read the data set. This method takes a number between 1 and 4, as argument and 
-returns the data train set according to the argument number.
+returns the data train set according to the argument number. \\
+
+To see available parameters running the application, use the following commands:
+
+\begin{lstlisting}[frame=single,caption={Application usage},language=bash] 
+$ chmod +x izhikevich.py
+$ ./izhikevich.py -h
+\end{lstlisting}
 
 \subsubsection{Minor changes}
 \label{sec:geneticchanges}
 
 The crossover functions needed a fix, as they didn't take consideration for a genotype with genes larger
-then one bit. So the genes would be splitted up, and that destroyd the evolving. 
+then one bit. So the genes would be splitted up, and that destroyd the evolving. \\
+
+The elitism and truncation methods were also falty. Elitism now uses the right population group, and the
+is no longer part of the parent selection, but rather gets emediatly passed as a child. They don't get mutated. 
 
 
 \subsection{Genotype representation}
@@ -101,7 +111,9 @@ to the ranges defined in the project description.
 
 \subsection{Fitness function}
 
-As described in \autoref{sec:sdm}, the fitness is calculated by using the distance metric, and inverting it. 
+As described in \autoref{sec:sdm}, the fitness is calculated by using the distance metric, and inverting it. It needs
+to be inverted as the distance metrics returns higher values for worse solutions. \\
+
 The distance metrics, each work in different ways.
 
 \begin{enumerate}
